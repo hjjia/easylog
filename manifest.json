@@ -1,11 +1,20 @@
 {
-	"name":"hellow ",
-	"description":"easy log",
+	"name":"EasyLog",
+	"description":"A easy way to check the log",
 	"version":"1.0",
 	"manifest_version":2,
-	"browser_action": {
-		"default_popup":"hello.html",
-		"default_icon":"hello_extensions.png"
+	"page_action":{
+		"default_popup":"popup.html",
+		"dafault_icon":{
+			"16":"images/get_started16.png",
+			"32":"images/get_started32.png",
+			"48":"images/get_started48.png"
+		}
+	},
+	"icons": {
+		"16":"images/get_started16.png",
+		"32":"images/get_started32.png",
+		"48":"images/get_started48.png"
 	},
 	"commands":{
 		"_execute_browser_action": {
@@ -15,5 +24,12 @@
 			},
 			"description":"Open hello.html"
 		}
+	},
+	"options_page": "options.html",
+	"permissions":["activeTab","declarativeContent","storage"],
+	"background": {
+		"scripts":["background.js"],
+		"persistent": false
 	}
+
 }
