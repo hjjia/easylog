@@ -19,21 +19,25 @@
 // https://www.cnblogs.com/guogangj/p/3235703.html
 //https://www.moesif.com/blog/technical/apirequest/How-We-Captured-AJAX-Requests-with-a-Chrome-Extension/
 //chrome.webRequest.onBeforeRequest.addListener (
+//chrome.webRequest.onResponseStarted.addListener (
 chrome.webRequest.onCompleted.addListener (
  
     function(details) {
-    
+		//if(details.url.indexOf('used_by_contents') != -1) {
+		if(details.type == "xmlhttprequest"){
+			console.log('details',details); 
+		}
         chrome.tabs.query({active:true},function(tab){
             // 当前页面的url
             var pageUrl = tab[0].url;
             // 在这可以写判断逻辑，将请求cancel掉，或者将请求打印出来
             console.log("current url ==> " + pageUrl);
-            console.log("current tab -> " + tab);
+            //console.log("current tab -> " , tab);
         });
  
     },
      
     {urls:["*://*/*"]},  //监听页面请求,你也可以通过*来匹配。
-    ["blocking"] 
+    ["responseHeaders"] 
 );
 
