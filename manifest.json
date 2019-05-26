@@ -26,10 +26,10 @@
 		}
 	},
 	"options_page": "options.html",
-	"permissions":["activeTab","declarativeContent","storage"],
+	"permissions":["*://*/*","webRequest","webRequestBlocking","activeTab","declarativeContent","storage"],
 	"background": {
 		"scripts":["background.js"],
-		"persistent": false
+		"persistent": true 
 	}
 
 }
