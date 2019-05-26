@@ -16,7 +16,10 @@
 
 
 // https://blog.csdn.net/hhmouse111/article/details/36901527
-chrome.webRequest.onBeforeRequest.addListener (
+// https://www.cnblogs.com/guogangj/p/3235703.html
+//https://www.moesif.com/blog/technical/apirequest/How-We-Captured-AJAX-Requests-with-a-Chrome-Extension/
+//chrome.webRequest.onBeforeRequest.addListener (
+chrome.webRequest.onCompleted.addListener (
  
     function(details) {
     
@@ -24,7 +27,8 @@ chrome.webRequest.onBeforeRequest.addListener (
             // 当前页面的url
             var pageUrl = tab[0].url;
             // 在这可以写判断逻辑，将请求cancel掉，或者将请求打印出来
-            console.log("current url -> " + pageUrl);
+            console.log("current url ==> " + pageUrl);
+            console.log("current tab -> " + tab);
         });
  
     },
