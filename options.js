@@ -6,6 +6,8 @@ let page = document.getElementById('buttonDiv');
       button.style.backgroundColor = item;
       button.addEventListener('click', function() {
         chrome.storage.sync.set({color: item}, function() {
+            //console.log(window.alert);
+            document.body.style.background = item;
           console.log('color is ' + item);
         })
       });

@@ -2,6 +2,10 @@
     chrome.storage.sync.set({color: '#3aa757'}, function() {
       console.log('The color is green.');
     });
+  });
+
+
+      /*
     chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
       chrome.declarativeContent.onPageChanged.addRules([{
         conditions: [new chrome.declarativeContent.PageStateMatcher({
@@ -11,9 +15,10 @@
             actions: [new chrome.declarativeContent.ShowPageAction()]
       }]);
     });
+
   });
 
-
+        */
 
 // https://blog.csdn.net/hhmouse111/article/details/36901527
 // https://www.cnblogs.com/guogangj/p/3235703.html
@@ -40,4 +45,3 @@ chrome.webRequest.onCompleted.addListener (
     {urls:["*://*/*"]},  //监听页面请求,你也可以通过*来匹配。
     ["responseHeaders"] 
 );
-

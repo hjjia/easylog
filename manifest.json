@@ -29,7 +29,7 @@
 	"permissions":["*://*/*","webRequest","webRequestBlocking","activeTab","declarativeContent","storage"],
 	"background": {
 		"scripts":["background.js"],
-		"persistent": true 
+		"persistent": true
 	}
 
 }
