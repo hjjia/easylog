@@ -18,9 +18,9 @@
 		"48":"images/get_started48.png"
 	},
 	"options_page": "options.html",
-	"permissions":["*://*/*","webRequest","webRequestBlocking","activeTab","declarativeContent","storage"],
+	"permissions":["<all_urls>","webRequest","activeTab","declarativeContent","storage"],
 	"content_scripts":[{
-		"matches":["*://*/*"],
+		"matches":["<all_urls>"],
 		"js":["js/jquery.js", "content_script.js"]
 	}],
 	"background": {

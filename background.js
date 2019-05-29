@@ -16,44 +16,43 @@
 
 /*
 
-			$.ajax({
-                  method: "GET", // 一般用 POST 或 GET 方法
-                  // 请求后端，获取日志信息
-                  url: "http://www.a.com:5000/", // 要请求的地址
-                  dataType: "json", // 服务器返回的数据类型，可能是文本 ，音频 视频 script 等浏览 （MIME类型）器会采用不同的方法来解析。
-                  async: false,
-                  data:{ //发送到服务器的数据。将自动转换为请求字符串格式。GET 请求中将附加在 URL 后。查看 processData 选项说明以禁止此自动转换。必须为 Key/Value 格式。如果为数组，jQuery 将自动为不同值对应同一个名称。如 {foo: ["bar1", "bar2"]} 转换为 "&foo=bar1&foo=bar2"。
-                    url: "123244"
-                 },
-                 success(msg){
-                        ajaxRet = msg;
-                       console.log("ajax return", msg);// 成功之后执行这里面的代码
-                 },
-                 error(e){
-                       console.log(e)//请求失败是执行这里的函数
-                 }
-            });
 */
 var ajaxRet = {};
+var host = "www.a.com:5000";	
 chrome.webRequest.onCompleted.addListener (
 
     function(details) {
 		//if(details.url.indexOf('used_by_contents') != -1) {
 		if(details.type == "xmlhttprequest"){
-		    console.log(details.url);
-		    //console.log(details.statusCode);
+			console.log('ajax_url',details.url);
+			//console.log(details.statusCode);
 			//console.log('details',details);
-			// todo ajax
-
+			if(details.url.indexOf(host) == -1) {
+				$.ajax({
+					method: "GET", // 一般用 POST 或 GET 方法
+					// 请求后端，获取日志信息
+					url: "http://www.a.com:5000/", // 要请求的地址
+					dataType: "json", // 服务器返回的数据类型，可能是文本 ，音频 视频 script 等浏览 （MIME类型）器会采用不同的方法来解析。
+					data:{ //发送到服务器的数据。将自动转换为请求字符串格式。GET 请求中将附加在 URL 后。查看 processData 选项说明以禁止此自动转换。必须为 Key/Value 格式。如果为数组，jQuery 将自动为不同值对应同一个名称。如 {foo: ["bar1", "bar2"]} 转换为 "&foo=bar1&foo=bar2"。
+						url: details.url
+					},
+					success(msg){
+						ajaxRet = msg;
+						console.log("ajax return", msg);// 成功之后执行这里面的代码
+					},
+					error(e){
+						console.log(e)//请求失败是执行这里的函数
+					}
+				});
+			} 
 		}
         chrome.tabs.query({active:true},function(tab){
             // 当前页面的url
             var pageUrl = tab[0].url;
             // 在这可以写判断逻辑，将请求cancel掉，或者将请求打印出来
-            console.log("current url ==> " + pageUrl);
+            //console.log("current url ==> " + pageUrl);
             //console.log("current tab -> " , tab);
         });
-        return;
 
     },
 
@@ -83,7 +82,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendRequest){
         dataType: "json"
     }).done(function(msg) {
         Data.ret = msg;
-        console.log(msg);
+        console.log('log',msg);
     }).fail(function(jqXHR, textStatus) {
         console.log("failed");
     });
