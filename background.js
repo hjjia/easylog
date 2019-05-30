@@ -18,7 +18,9 @@
 
 */
 var ajaxRet = {};
-var host = "www.a.com:5000";	
+var host = "http://www.a.com:5000";
+var url1 = host+'/'; // 触发记录日志的ajax请求
+var url2 = host + '/log'; // 获取日志内容
 chrome.webRequest.onCompleted.addListener (
 
     function(details) {
@@ -31,7 +33,7 @@ chrome.webRequest.onCompleted.addListener (
 				$.ajax({
 					method: "GET", // 一般用 POST 或 GET 方法
 					// 请求后端，获取日志信息
-					url: "http://www.a.com:5000/", // 要请求的地址
+					url: url1, // 要请求的地址
 					dataType: "json", // 服务器返回的数据类型，可能是文本 ，音频 视频 script 等浏览 （MIME类型）器会采用不同的方法来解析。
 					data:{ //发送到服务器的数据。将自动转换为请求字符串格式。GET 请求中将附加在 URL 后。查看 processData 选项说明以禁止此自动转换。必须为 Key/Value 格式。如果为数组，jQuery 将自动为不同值对应同一个名称。如 {foo: ["bar1", "bar2"]} 转换为 "&foo=bar1&foo=bar2"。
 						url: details.url
@@ -67,21 +69,21 @@ changeTab = function(tabId, changeInfo, tab) {
 // 切换tab
 chrome.tabs.onUpdated.addListener(changeTab);
 
-var Data = {};
+var logData = {};
 // 监听content_sript.js发送过来的数据
 // 调用后端接口，分析页面上的内容
 // 通过当前url，获取当前页面，曾经发生的ajax请求,以及他们的日志信息
 chrome.runtime.onMessage.addListener(function(request, sender, sendRequest){
-	Data = request; // request 就是content_script发送过来的json串
+	logData = request; // request 就是content_script发送过来的json串
     $.ajax({
-        url: "http://www.a.com:5000/log",
+        url: url2,
         cache: false,
         type: "get",
         //data: JSON.stringify(Data),
-        data: Data,
+        data: logData,
         dataType: "json"
     }).done(function(msg) {
-        Data.ret = msg;
+        logData.ret = msg;
         console.log('log',msg);
     }).fail(function(jqXHR, textStatus) {
         console.log("failed");
