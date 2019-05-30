@@ -70,11 +70,12 @@ changeTab = function(tabId, changeInfo, tab) {
 chrome.tabs.onUpdated.addListener(changeTab);
 
 var logData = {};
-// 监听content_sript.js发送过来的数据
+// 监听content_sript.js发送过来的数据 var msg = { "title": $("title").html(), "url": window.location.href}
 // 调用后端接口，分析页面上的内容
 // 通过当前url，获取当前页面，曾经发生的ajax请求,以及他们的日志信息
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendRequest){
-	logData = request; // request 就是content_script发送过来的json串
+	logData = request; // request 就是content_script发送过来的json串 ,通过地址栏里的url，获取该路径下的ajax请求产生的日志列表
     $.ajax({
         url: url2,
         cache: false,
