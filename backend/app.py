@@ -18,6 +18,7 @@ def hello():
 def lian():
     return "lianmen cpc ! "+str(time())
 
+
 @app.route("/log")
 def vlog():
     ret = {
