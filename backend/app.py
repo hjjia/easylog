@@ -2,6 +2,7 @@ from flask import Flask, Response, jsonify, request
 from time import time
 import pymysql
 from models import user
+from utils import cmd
 
 app = Flask(__name__)
 
@@ -16,9 +17,14 @@ def hello():
             }
     return jsonify(ret)
 
-@app.route("/lianmen")
+
+@app.route("/add-stage",methods=['post'])
 def lian():
-    return "lianmen cpc ! "+str(time())
+    data = request.form.value()
+    stageId = stage.addStage(data)
+    return jsonify({"id":stageId})
+
+
 
 
 @app.route("/log")
@@ -49,8 +55,8 @@ def signin():
             'username':request.args.get("username"),
             'password':"123456"
             }
-    user.signUser(data)
-    return 'sign'
+    lastID = user.signUser(data)
+    return jsonify({'id':lastID})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=5000,debug=True)
