@@ -66,8 +66,31 @@ chrome.webRequest.onCompleted.addListener (
 changeTab = function(tabId, changeInfo, tab) {
     console.log(tabId, changeInfo, tab);
 }
-// 切换tab
-chrome.tabs.onUpdated.addListener(changeTab);
+// oUpdated
+/*
+onUpdated 事件
+URL更新事件监听， 一般访问一个URL会触发两次，
+访问的时候触发，状态为loading,
+访问完成的时候触发 状态为complete
+chrome.tabs.onUpdated.addListener(function (id, info, tab) {
+    if (tab.status === 'loading') {
+        updateBrowserAction(id, tab.url);
+    }
+});
+*/
+// chrome.tabs.onUpdated.addListener(changeTab);
+// tab被激活
+//当tab页被激活的时候触发
+//即切换tab页，或者打开关闭tab都会触发。
+
+//todo 切换tab，popup页面也要对应刷新
+chrome.tabs.onActivated.addListener(function (activeInfo) {
+    if (activeInfo.tabId) {
+        chrome.tabs.get(activeInfo.tabId, function (tab) {
+            updateBrowserAction(tab.id, tab.url);
+        });
+    }
+});
 
 var logData = {};
 // 监听content_sript.js发送过来的数据 var msg = { "title": $("title").html(), "url": window.location.href}
