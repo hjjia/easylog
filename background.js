@@ -87,7 +87,8 @@ chrome.tabs.onUpdated.addListener(function (id, info, tab) {
 chrome.tabs.onActivated.addListener(function (activeInfo) {
     if (activeInfo.tabId) {
         chrome.tabs.get(activeInfo.tabId, function (tab) {
-            updateBrowserAction(tab.id, tab.url);
+           // updateBrowserAction(tab.id, tab.url);
+			console.log("change tab ",activeInfo);
         });
     }
 });
@@ -105,8 +106,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendRequest){
         type: "get",
         //data: JSON.stringify(Data),
         data: logData,
-        dataType: "json"
-    }).done(function(msg) {
         logData.ret = msg;
         console.log('log',msg);
     }).fail(function(jqXHR, textStatus) {

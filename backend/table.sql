@@ -42,7 +42,7 @@ create table t_stage (
     stage_name varchar(20) not null default '' comment '步骤名称',
     connect_str varchar(1000) not null default '' comment '连接字符串',
     cmd_format varchar(1000) not null default '' comment '待执行的命令格式, 可能会有宏替换如 ___host___',
-    stage_type tinyint not null default  1 comment '1是mysql数据库，2是ssh服务器，3是redis, 4是zk',
+    stage_type tinyint not null default  1 comment '1是mysql数据库，2是ssh服务器，3是redis, 4是zk,5http接口调用',
     create_time int not null default 0 comment '创建时间',
     status tinyint not null default 1 comment '1有效，2无效'
 ) engine = innodb charset = 'utf8' comment '步骤表';

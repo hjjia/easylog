@@ -38,18 +38,19 @@ def vlog():
         '''
     return jsonify(ret)
 
-@app.route("/usr")
-def user():
-    return "user"
+@app.route("/user-list")
+def userList():
+    users = user.userList()
+    return jsonify(users)
 
 @app.route("/sign")
 def signin():
     data = {
-            'username':"lisi",
-            'password':'123456'
+            'username':request.args.get("username"),
+            'password':"123456"
             }
     user.signUser(data)
     return 'sign'
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",port=5000)
+    app.run(host="0.0.0.0",port=5000,debug=True)
