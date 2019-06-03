@@ -11,10 +11,12 @@ create table t_user (
 
 
 drop table if exists t_ajax_request;
+// 点击各种url，先生成一批ajax请求记录
 create table t_ajax_request (
     id int not null primary key auto_increment,
     url varchar(1000) not null default '' comment 'url地址',
     user_id int not null default 0 comment '用户id',
+    parent_ajax_url varchar(1000) not null default '' comment '对于单页面应用，url一直不变,父级ajax请求url',
     ajax_url varchar(1000) not null default '' comment 'ajax请求url',
     ajax_method char(10) not null default 'get' comment '请求方法get/post',
     ajax_payload text comment '请求的数据',
@@ -41,7 +43,6 @@ create table t_stage (
     id int not null primary key auto_increment,
     stage_name varchar(20) not null default '' comment '步骤名称',
     connect_str varchar(1000) not null default '' comment '连接字符串',
-    cmd_format varchar(1000) not null default '' comment '待执行的命令格式, 可能会有宏替换如 ___host___',
     stage_type tinyint not null default  1 comment '1是mysql数据库，2是ssh服务器，3是redis, 4是zk,5http接口调用,6paas_config,7jquery_code',
     create_time int not null default 0 comment '创建时间',
     status tinyint not null default 1 comment '1有效，2无效'
@@ -55,6 +56,7 @@ create table t_ajax_stage_relation (
     ajax_id int not null default 0 comment 'ajax请求id',
     user_id int not null default 0 comment '用户id 0 就是公用的',
     stage_id int not null default 0 comment '步骤id',
+    cmd_format varchar(1000) not null default '' comment '待执行的命令格式, 可能会有宏替换如 ___host___',
     status  tinyint not null default 1 comment '1是可以，2是不可用'
 )engine = innodb charset = 'utf8' comment 'ajax请求和步骤关系表';
 

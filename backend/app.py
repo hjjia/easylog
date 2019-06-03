@@ -1,7 +1,7 @@
 from flask import Flask, Response, jsonify, request
 from time import time
 import pymysql
-from models import user
+from models import user,stage
 from utils import cmd
 
 app = Flask(__name__)
@@ -20,7 +20,8 @@ def hello():
 
 @app.route("/add-stage",methods=['post'])
 def lian():
-    data = request.form.value()
+    data = request.form
+    print(data)
     stageId = stage.addStage(data)
     return jsonify({"id":stageId})
 
