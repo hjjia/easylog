@@ -3,7 +3,7 @@ from time import time
 import pymysql
 from models import user,stage
 from utils import cmd
-from urllib.parse improt urlparse
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 
@@ -14,7 +14,7 @@ def hello():
     url = data['easylog_generatelog_url'] # ajax请求url
     res = urlparse(url)
     # ParseResult(scheme='http', netloc='www.aa.com.cn:8908', path='/asdfasf/teste', params='', query='id=12&name=asfsdfd', fragment='')
-    ajax_url = res['scheme']+res['netloc']+res['path']
+    ajax_url = res.scheme+res.netloc+res.path
     initiator = data['easylog_initiator'] # 地址栏
     # todo 根据ajax请求的ajax_url,和地址栏，找到关联的stage，并且，执行相应的命令，获取指定步骤下的日志信息。并保存到表中
     return jsonify(data)
