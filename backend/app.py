@@ -3,47 +3,55 @@ from time import time
 import pymysql
 from models import user,stage
 from utils import cmd
+from urllib.parse improt urlparse
 
 app = Flask(__name__)
 
-@app.route("/")
+## ajax请求，产生日志记录
+@app.route("/ajax-request",methods=["post"])
 def hello():
+    data = request.form
+    url = data['easylog_generatelog_url'] # ajax请求url
+    res = urlparse(url)
+    # ParseResult(scheme='http', netloc='www.aa.com.cn:8908', path='/asdfasf/teste', params='', query='id=12&name=asfsdfd', fragment='')
+    ajax_url = res['scheme']+res['netloc']+res['path']
+    initiator = data['easylog_initiator'] # 地址栏
+    # todo 根据ajax请求的ajax_url,和地址栏，找到关联的stage，并且，执行相应的命令，获取指定步骤下的日志信息。并保存到表中
+    return jsonify(data)
+
+# 返回日志信息
+@app.route("/get-log")
+def vlog():
     ret = {
-            "code": 200,
-            "msg" : "hello world",
-            "data": {"time":str(time()),
-                "ajax_url":request.args.get("url")
-                }
-            }
+        "code": 200,
+        "msg" : "log",
+        "data": {
+            "time":str(time()),
+            "ajax_url":request.args.get("url")
+        }
+    }
+    url = request.args.get("url")
+    if url == "www.w.com" :
+        '''
+        127.0.0.1:3306 easy_log easylog/123456
+        '''
     return jsonify(ret)
+
 
 
 @app.route("/add-stage",methods=['post'])
 def lian():
     data = request.form
-    print(data)
     stageId = stage.addStage(data)
     return jsonify({"id":stageId})
 
+@app.route("/stage-list",methods=['get'])
+def stage_list():
+    res = stage.stageList()
+    return jsonify(res)
 
 
 
-@app.route("/log")
-def vlog():
-    ret = {
-            "code": 200,
-            "msg" : "log",
-            "data": {
-                "time":str(time()),
-                "ajax_url":request.args.get("url")
-                }
-            }
-    url = request.args.get("url")
-    if url == "http://ad.vivo.com.cn/register" :
-        '''
-        127.0.0.1:3306 easy_log easylog/123456
-        '''
-    return jsonify(ret)
 
 @app.route("/user-list")
 def userList():

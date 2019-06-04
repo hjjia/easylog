@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var data = chrome.extension.getBackgroundPage().logData;
     var ajaxdata = chrome.extension.getBackgroundPage().ajaxRet;
 
-	console.log('log data',data);
-	console.log('ajax data',ajaxdata);
+	//console.log('log data',data);
+	//console.log('ajax data',ajaxdata);
         //data: JSON.stringify(Data),
     $(".result").html(timetrans(Date.now())+"<br/>"+JSON.stringify(data));
     $(".ajaxresult").html(JSON.stringify(ajaxdata));

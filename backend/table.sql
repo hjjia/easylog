@@ -33,6 +33,10 @@ create table t_log (
     ajax_id int not null default 0 comment 'ajax请求id',
     user_id int not null default 0 comment '用户id',
     stage_id int not null default 0 comment '步骤id',
+    ajax_url varchar(1000) not null default '' comment 'ajax请求url',
+    initiator_url varchar(1000) not null default '' comment 'ajax请求时的地址栏',
+    ajax_method char(10) not null default 'get' comment '请求方法get/post',
+    ajax_payload text comment '请求的数据',
     log_data text comment '对应的步骤下的日志信息',
     create_time int not null default 0 comment '创建时间',
     status tinyint not null default 1 comment '1有效，2无效'
