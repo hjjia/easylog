@@ -1,6 +1,7 @@
 from rediscluster import StrictRedisCluster
 import paramiko
 import re
+import json
 import pymysql
 
 
@@ -8,15 +9,23 @@ import pymysql
 
 
 
+# todo 要处理多条命令的情况
 def exec_cmd(stage_type,connect_str,cmd_form,params):
     # text = "find a replacement for me %(a)s and %(b)s"%dict(a='foo', b='bar')
-    connect_arr = load(connect_str)
-    params = connect_arr + params
+    mapInfo = json.loads(connect_str)
+    #for key, val in params.items():
+    #    mapInfo[key] = val
+    params.update(mapInfo) # 把mapInfo的键值对，更新到params中
     def sub_callback(m):
         return params[m.group(1)]
     cmd = re.sub("___(\w+)___",sub_callback,cmd_form)
     if stage_type == 1:
-        exec_mysql(dsn,sql)
+        exec_mysql(mapInfo,cmd)
+    elif stage_type == 2:
+        exec_ssh(mapInfo,cmd)
+    elif stage_type == 3:
+        # todo 兼容多种情况
+        exec_redis(mapInfo,cmd)
     return "result"
 
 def exec_mysql(dsn,sql):
