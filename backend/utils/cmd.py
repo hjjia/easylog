@@ -9,16 +9,28 @@ import pymysql
 
 
 
-# todo 要处理多条命令的情况
-def exec_cmd(stage_type,connect_str,cmd_form,params):
+# 要处理多条命令的情况
+# cmd_format 就是list类型，支持多条记录
+def exec_cmd(data,params):
+    stage_type = data['stage_type']
+    connect_str = data['connect_str']
+    cmd_format = data['cmd_format']
+    """
+    :param stage_type: 1mysql,2ssh,3redis ....
+    :param connect_str: {"host":"127.0.0.1...} 或 [{"host":127.0.0.1,},{"host:192.168.12.2}...]
+    :param cmd_format: [select * from t_user where id = ___id___] 或 [ "get ad:creatvie:___id___","hgetall ad:spent:___id___"....]
+    :param params: {"id":123,"timestap":1243455...}
+    :return:
+    """
     # text = "find a replacement for me %(a)s and %(b)s"%dict(a='foo', b='bar')
     mapInfo = json.loads(connect_str)
-    #for key, val in params.items():
-    #    mapInfo[key] = val
-    params.update(mapInfo) # 把mapInfo的键值对，更新到params中
+    if isinstance(mapInfo,dict) and isinstance(params,dict):
+        params.update(mapInfo) # 把mapInfo的键值对，更新到params中
     def sub_callback(m):
         return params[m.group(1)]
-    cmd = re.sub("___(\w+)___",sub_callback,cmd_form)
+    cmd = []
+    for line in cmd_format:
+        cmd.append(re.sub("___(\w+)___",sub_callback,line))
     if stage_type == 1:
         exec_mysql(mapInfo,cmd)
     elif stage_type == 2:
@@ -28,31 +40,36 @@ def exec_cmd(stage_type,connect_str,cmd_form,params):
         exec_redis(mapInfo,cmd)
     return "result"
 
-def exec_mysql(dsn,sql):
+def exec_mysql(dsn,sqls):
     """
     mysql -u [username] -p -e "create database somedb"
     :param dsn:  mysql -u[username] -p[passowrd] -P[port]
-    :param sql: "select * from table1"
+    :param sql: ["select * from table1"]
     :return: query result
     """
-    db = pymysql.connect(host=dsn["host"],user=dsn["username"],password=dsn["password"],db=dsn["database"],cursorclass=pymysql.cursors.DictCursor)
+    db = pymysql.connect(host=dsn["host"],user=dsn["username"],password=dsn["password"],db=dsn["db"],cursorclass=pymysql.cursors.DictCursor)
     cursor = db.cursor()
-    cursor.execute(sql)
-    result = cursor.fetchall()
+    result = {}
+    for sql in sqls:
+        cursor.execute(sql)
+        result[sql] = cursor.fetchall()
     return result
 
-def exec_ssh(server,cmd):
+def exec_ssh(server,cmds):
     ssh = paramiko.SSHClient()
     #这行代码的作用是允许连接不在know_hosts文件中的主机。
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(server['ip'],  server['port'], server["username"], server["password"])
-    stdin, stdout, stderr = ssh.exec_command(cmd)
-    res = stdout.readlines() # list
-    error = stderr.readlines() #list
-    if error:
-        return error
-    else:
-        return res
+    result = {}
+    for cmd in cmds:
+        stdin, stdout, stderr = ssh.exec_command(cmd)
+        res = stdout.readlines() # list
+        error = stderr.readlines() #list
+        result[cmd] = {
+            "stdout":res,
+            "stderr":error
+        }
+    return result
 
 def exec_redis(redis_nodes,cmd_list):
     '''
@@ -75,8 +92,6 @@ def exec_redis(redis_nodes,cmd_list):
 
     redisconn = StrictRedisCluster(startup_nodes=redis_nodes,decode_responses=True)
     res = {}
-    if isinstance(cmd_list,str):
-        cmd_list = [cmd_list]
     for cmd in cmd_list:
         cmd = cmd.strip()
         arr = re.split(" +",cmd)

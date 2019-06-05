@@ -1,7 +1,6 @@
 from flask import Flask, Response, jsonify, request
 from time import time
-import pymysql
-from models import user,stage
+from models import user,stage,ajaxRequest,log
 from utils import cmd
 from urllib.parse import urlparse
 
@@ -14,27 +13,27 @@ def hello():
     url = data['easylog_generatelog_url'] # ajax请求url
     res = urlparse(url)
     # ParseResult(scheme='http', netloc='www.aa.com.cn:8908', path='/asdfasf/teste', params='', query='id=12&name=asfsdfd', fragment='')
-    ajax_url = res.scheme+res.netloc+res.path
+    ajax_url = res.scheme+"://"+res.netloc+res.path
     initiator = data['easylog_initiator'] # 地址栏
     # todo 根据ajax请求的ajax_url,和地址栏，找到关联的stage，并且，执行相应的命令，获取指定步骤下的日志信息。并保存到表中
+    ajaxRequest.saveAjax({"initiator_url":initiator,"ajax_url":ajax_url})
+    stageList = ajaxRequest.getStageList(initiator,ajax_url)
+    for stage in stageList:
+        logData = stage
+        logData['log_data'] = cmd.exec_cmd(stage,data)
+        logData['payload'] = data
+        logData['initiator_url'] = url
+        logData['ajax_url'] = ajax_url
+        log.saveLog(logData)
+
     return jsonify(data)
 
 # 返回日志信息
 @app.route("/get-log")
 def vlog():
-    ret = {
-        "code": 200,
-        "msg" : "log",
-        "data": {
-            "time":str(time()),
-            "ajax_url":request.args.get("url")
-        }
-    }
-    url = request.args.get("url")
-    if url == "www.w.com" :
-        '''
-        127.0.0.1:3306 easy_log easylog/123456
-        '''
+    url = urlparse(request.args.get("url"))
+    initiator = url.scheme + "://" +url.netloc + url.path #地址栏
+    ret = log.getLog(initiator)
     return jsonify(ret)
 
 
