@@ -30,6 +30,10 @@ function parseUrl(url) {
 /*
 
 */
+
+var currentUrl = ''
+
+
 var ajaxRet = {};
 var host = "http://www.a.com:5000";
 var url1 = host+'/ajax-request'; // 触发记录日志的ajax请求
@@ -44,6 +48,14 @@ chrome.webRequest.onBeforeRequest.addListener(
                 //console.log('ajax_url',details.url);
                 //console.log(details.statusCode);
                 console.log('details',details);
+				var currentUrl = ''
+				chrome.tabs.query({
+					  active: true,
+					  currentWindow: true
+				}, function(tabs) {
+					  var tab = tabs[0];
+					  currentUrl = tab.url;
+				});
                 //  获取ajax请求的参数
                 var params = {};
                 if(details.method == 'POST') {
@@ -53,7 +65,9 @@ chrome.webRequest.onBeforeRequest.addListener(
                     params =  parseUrl(details.url);
                 }
                 params['easylog_generatelog_url'] = details.url;
-                params['easylog_initiator'] = details.initiator; // 地址栏host
+                //params['easylog_initiator'] = details.initiator; // 地址栏host
+                params['easylog_initiator'] = currentUrl; // 地址栏host
+				console.log('currentUrl',currentUrl);
                 params['location_href'] = window.location.href; // chrome-extension://kpkhgljdoibppbphdelmgcadephnkakn/_generated_background_page.html
 				$.ajax({
 					type: "post", // 一般用 POST 或 GET 方法
