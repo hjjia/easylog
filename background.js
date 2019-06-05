@@ -33,6 +33,14 @@ function parseUrl(url) {
 
 var currentUrl = ''
 
+chrome.tabs.query({
+	  active: true,
+	  currentWindow: true
+}, function(tabs) {
+	  var tab = tabs[0];
+	  currentUrl = tab.url;
+	  console.log('currentUrl test',currentUrl)
+});
 
 var ajaxRet = {};
 var host = "http://www.a.com:5000";
@@ -47,16 +55,8 @@ chrome.webRequest.onBeforeRequest.addListener(
 			if(details.url.indexOf(host) == -1 && details.url.indexOf("http://chrome-extension") == -1) {
                 //console.log('ajax_url',details.url);
                 //console.log(details.statusCode);
-                console.log('details',details);
-				var currentUrl = ''
-				chrome.tabs.query({
-					  active: true,
-					  currentWindow: true
-				}, function(tabs) {
-					  var tab = tabs[0];
-					  currentUrl = tab.url;
-				});
                 //  获取ajax请求的参数
+				console.log('details',details);
                 var params = {};
                 if(details.method == 'POST') {
                     var postedString = details.requestBody.raw.map(function(data) { return String.fromCharCode.apply(null, new Uint8Array(data.bytes)) }).join('');
@@ -64,10 +64,16 @@ chrome.webRequest.onBeforeRequest.addListener(
                 } else {
                     params =  parseUrl(details.url);
                 }
+
+				chrome.tabs.getSelected(null, function(tab) {
+					  currentUrl  = tab.url;
+				});
+
+
                 params['easylog_generatelog_url'] = details.url;
-                //params['easylog_initiator'] = details.initiator; // 地址栏host
-                params['easylog_initiator'] = currentUrl; // 地址栏host
-				console.log('currentUrl',currentUrl);
+                params['easylog_initiator'] = details.initiator; // 地址栏host
+                //params['easylog_initiator'] = currentUrl; // 地址栏host
+	  			console.log('currentUrl inner',currentUrl)
                 params['location_href'] = window.location.href; // chrome-extension://kpkhgljdoibppbphdelmgcadephnkakn/_generated_background_page.html
 				$.ajax({
 					type: "post", // 一般用 POST 或 GET 方法
