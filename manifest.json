@@ -24,6 +24,7 @@
 		"js":["js/jquery.js", "content_script.js"]
 	}],
 	"background": {
+		"matches":["<all_urls>"],
 		"scripts":["background.js","js/jquery.js"],
 		"persistent": true
 	}

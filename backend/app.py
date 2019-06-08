@@ -1,6 +1,6 @@
 from flask import Flask, Response, jsonify, request
 from time import time
-from models import user,stage,ajaxRequest,log
+from models import user,stage,ajaxRequest,log,ajaxStageRelation
 from utils import cmd
 from urllib.parse import urlparse
 
@@ -16,8 +16,10 @@ def hello():
     ajax_url = res.scheme+"://"+res.netloc+res.path
     initiator = data['easylog_initiator'] # 地址栏
     # todo 根据ajax请求的ajax_url,和地址栏，找到关联的stage，并且，执行相应的命令，获取指定步骤下的日志信息。并保存到表中
-    ajaxRequest.saveAjax({"initiator_url":initiator,"ajax_url":ajax_url})
+    print('save ajax data',data)
+    ajaxRequest.saveAjax({"host":data['host'],"initiator_url":initiator,"ajax_url":ajax_url})
     stageList = ajaxRequest.getStageList(initiator,ajax_url)
+    print("stageList",stageList)
     for stage in stageList:
         logData = stage
         logData['log_data'] = cmd.exec_cmd(stage,data)
@@ -49,6 +51,18 @@ def stage_list():
     res = stage.stageList()
     return jsonify(res)
 
+
+@app.route("/add-stage-ajax-relation",methods=['get','post'])
+def relation():
+    data = {
+            "stage_id":1,
+            "ajax_id":1,
+            "cmd_format":"select * from t_ajax_request where id = ___id___"
+            }
+    ajaxStageRelation.saveRelation(data)
+    return jsonify(data)
+
+    
 
 
 

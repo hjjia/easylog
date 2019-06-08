@@ -31,17 +31,7 @@ function parseUrl(url) {
 
 */
 
-var currentUrl = ''
-
-chrome.tabs.query({
-	  active: true,
-	  currentWindow: true
-}, function(tabs) {
-	  var tab = tabs[0];
-	  currentUrl = tab.url;
-	  console.log('currentUrl test',currentUrl)
-});
-
+var currentUrl = '';
 var ajaxRet = {};
 var host = "http://www.a.com:5000";
 var url1 = host+'/ajax-request'; // 触发记录日志的ajax请求
@@ -52,28 +42,45 @@ chrome.webRequest.onBeforeRequest.addListener(
     function(details) {
 		//if(details.url.indexOf('used_by_contents') != -1) {
 		if(details.type == "xmlhttprequest"){
-			if(details.url.indexOf(host) == -1 && details.url.indexOf("http://chrome-extension") == -1) {
+			if(details.url.indexOf(host) == -1 
+				&& details.url.indexOf("http://chrome-extension") == -1
+				&& details.url.indexOf("https://chrome-extension") == -1
+				&& details.url.indexOf("chrome://extensions") ==  -1
+			) {
                 //console.log('ajax_url',details.url);
                 //console.log(details.statusCode);
                 //  获取ajax请求的参数
 				console.log('details',details);
                 var params = {};
                 if(details.method == 'POST') {
-                    var postedString = details.requestBody.raw.map(function(data) { return String.fromCharCode.apply(null, new Uint8Array(data.bytes)) }).join('');
-                    params = JSON.parse(postedString);
+					if (details.requestBody.formData) {  // form表单的格式
+						params = details.requestBody.formData;
+					} else if (details.requestBody.raw) { // post请求的数据，raw格式
+						var postedString = details.requestBody.raw.map(function(data) { return String.fromCharCode.apply(null, new Uint8Array(data.bytes)) }).join('');
+						params = JSON.parse(postedString);
+					} else {
+						console.log('not support post data type',details.requestBody)
+					}
                 } else {
                     params =  parseUrl(details.url);
                 }
 
-				chrome.tabs.getSelected(null, function(tab) {
-					  currentUrl  = tab.url;
+				chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+					    console.log('chrome.tabs.query',tabs[0].url);
+					   currentUrl = tabs[0].url;
 				});
+
+				/*,getSelected将要被废弃
+				chrome.tabs.getSelected(null, function(tab) {
+					currentUrl  = tab.url;
+					console.log('chrome.tabs.getSetected',currentUrl)
+				});
+				*/
 
 
                 params['easylog_generatelog_url'] = details.url;
-                params['easylog_initiator'] = details.initiator; // 地址栏host
-                //params['easylog_initiator'] = currentUrl; // 地址栏host
-	  			console.log('currentUrl inner',currentUrl)
+				params['host'] = details.initiator; // 地址栏host,只有域名，没有路径 http://www.bb.com
+                params['easylog_initiator'] = currentUrl; //地址栏 http://www.bbb.com/123123/2343242
                 params['location_href'] = window.location.href; // chrome-extension://kpkhgljdoibppbphdelmgcadephnkakn/_generated_background_page.html
 				$.ajax({
 					type: "post", // 一般用 POST 或 GET 方法
@@ -91,14 +98,6 @@ chrome.webRequest.onBeforeRequest.addListener(
 				});
 			} 
 		}
-        chrome.tabs.query({active:true},function(tab){
-            // 当前页面的url
-            var pageUrl = tab[0].url;
-            // 在这可以写判断逻辑，将请求cancel掉，或者将请求打印出来
-            //console.log("current url ==> " + pageUrl);
-            //console.log("current tab -> " , tab);
-        });
-
     },
 
     {urls:["*://*/*"]},  //监听页面请求,你也可以通过*来匹配。

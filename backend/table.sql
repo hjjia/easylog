@@ -14,6 +14,7 @@ drop table if exists t_ajax_request;
 -- ajax请求记录,自动会记录
 create table t_ajax_request (
     id int not null primary key auto_increment,
+    host varchar(1000) not null default '' comment 'ajax请求时的地址栏域名',
     initiator_url varchar(1000) not null default '' comment 'ajax请求时的地址栏',
     parent_ajax_url varchar(1000) not null default '' comment '对于单页面应用，url一直不变,父级ajax请求url',
     ajax_url varchar(1000) not null default '' comment 'ajax请求url',
