@@ -1,10 +1,6 @@
 import pymysql
 import pymysqlpool
 
-db = pymysql.connect(host="127.0.0.1",user="easylog",password="123456",db="easy_log",charset='utf8',cursorclass=pymysql.cursors.DictCursor)
-cursor = db.cursor()
-
-
 class DbPool:
     
     __pool = None
@@ -17,7 +13,7 @@ class DbPool:
         if cls.__pool:
             return cls.__pool
         else:
-            cls.__pool = Db(*args,**kwargs)
+            cls.__pool = DbPool(*args,**kwargs)
             return cls.__pool
 
 
@@ -30,7 +26,7 @@ class DbPool:
             return result
         
 
-    def fetch_one(sql):
+    def fetch_one(self,sql):
         conn = self.__pool.get_connection()
         with conn.cursor() as cursor:
             cursor.execute(sql)
@@ -39,25 +35,33 @@ class DbPool:
             return result
         
 
-    def insert(sql):
+    def insert(self,sql):
         conn = self.__pool.get_connection()
         with conn.cursor() as cursor:
             cursor.execute(sql)
-            cursor.commit()
-            lastId = conn.lastrowid()
+            conn.commit()
+            lastId = cursor.lastrowid
             conn.close()
             return lastId 
 
-    def update(sql):
+    def update(self,sql):
         conn = self.__pool.get_connection()
         with conn.cursor() as cursor:
             cursor.execute(sql)
-            cursor.commit()
+            conn.commit()
+            cursor.close()
+
+    def delete(self,sql):
+        conn = self.__pool.get_connection()
+        with conn.cursor() as cursor:
+            cursor.execute(sql)
+            conn.commit()
+            cursor.close()
         
 
 
-config={'host':'127.0.0.1', 'user':'easylog', 'password':'123456', 'database':'easy_log', 'autocommit':True,'charset':'utf8','cursorclass':'pymysql.cursors.DictCursor'}
-Db = DbPool(size=10,name="dbpool",config=config)
+config={'host':'127.0.0.1', 'user':'easylog', 'password':'123456', 'database':'easy_log', 'autocommit':True,'charset':'utf8','cursorclass':pymysql.cursors.DictCursor}
+Db = DbPool.getInstance(size=10,name="dbpool",config=config)
 
 
 

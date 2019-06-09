@@ -59,6 +59,7 @@ create table t_ajax_stage_relation (
     user_id int not null default 0 comment '用户id 0 就是公用的',
     stage_id int not null default 0 comment '步骤id',
     cmd_format varchar(2000) not null default '' comment '待执行的命令格式, 可能会有宏替换如 ___host___',
+    create_time int not null default 0 comment '创建时间',
     status  tinyint not null default 1 comment '1是可以，2是不可用'
 )engine = innodb charset = 'utf8' comment 'ajax请求和步骤关系表';
 

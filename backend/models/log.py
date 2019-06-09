@@ -1,4 +1,4 @@
-from models import db,cursor
+from models import Db
 from flask import jsonify
 import time
 
@@ -21,12 +21,9 @@ def saveLog(data):
           " values(%d,%d,'%s',)"%(data['ajax_id'],data['ajax_url'],data['initiator_url'],data['ajax_method'],
                                   jsonify(data['ajax_payload']),jsonify(data['cmd']),jsonify(data['log_data']),int(time.time()))
 
-    cursor.execute(sql)
-    db.commit()
-    return cursor.lastrowid()
+    return Db.insert(sql) 
 
 def getLog(initiator):
     sql = "select log_data, ajax_payload from  t_log where initiator_url = '%s' order by id desc limit 10"%(initiator)
-    cursor.execute(sql)
-    return cursor.fetchall()
+    return Db.fetch_all(sql)
 

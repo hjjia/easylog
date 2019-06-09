@@ -31,7 +31,6 @@ var typeArr = ['unknow','mysql','ssh_server','redis','zookeeper','paas_config','
 //$(".js-stage-form" ).submit(function( event ) {
 $('.js-add-stage').on('click',function(){
 	var stage = $('.js-stage-form').serialize();
-	console.log(stage);
 	$.ajax({
 		url:host+"/add-stage",
 		data:stage,
@@ -59,7 +58,6 @@ $(document).ready(function(){
                 var line = '<tr> <td>'+res[i].id+'</td> <td>'+res[i].stage_name+'</td> <td>'+res[i].connect_str+'</td><td>'+typeArr[res[i].stage_type]+'</td> <td>'+timetrans(res[i].create_time)+'</td> </tr>';
                 str = str + line;
             }
-            console.log(str);
             $('.js-stage-list').html(str);
         },
         error:function(err) {
@@ -87,3 +85,24 @@ $(document).ready(function(){
 	//do something
 });
 
+
+$(".js-save-relation").on('click',function(){
+	var ajaxId = $('.js-ajax-id').val(),
+		stageId = $('.js-stage-id').val(),
+		cmdFormat = $('.js-cmd-format').val();
+// @app.route("/add-stage-ajax-relation",methods=['post'])
+	$.ajax({
+		url:host+'/add-stage-ajax-relation',
+		dataType:"json",
+		type:"post",
+		data:{"ajax_id":ajaxId,"stage_id":stageId,"cmd_format":cmdFormat},
+		success:function(res) {
+		    window.location.reload();
+		},
+		error:function(err) {
+			alert("server is busy");
+			console.log(err)
+		}
+	});
+
+});
