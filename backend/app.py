@@ -62,6 +62,11 @@ def relation():
     ajaxStageRelation.saveRelation(data)
     return jsonify(data)
 
+@app.route("/ajax-request-list")
+def ajax_request_list():
+    res = ajaxRequest.getList()
+    return jsonify(res)
+
     
 
 

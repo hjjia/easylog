@@ -9,6 +9,10 @@
           outline: none;
           margin: 10px;
         }
+		.connect_str {
+          height: 200px;
+          width: 300px;
+		}
       </style>
 </head>
 <body>
@@ -31,13 +35,13 @@
 		<option value="6">http_request</option>
 	</select>
 	<br/>
-	<textarea name="connect_str"></textarea>
+	<textarea name="connect_str" class="connect_str"></textarea>
 </div>
 <input type="button" value="添加步骤" class="js-add-stage"/>
 </form>
 <h2>步骤列表</h2>
 <table class="js-stage-list">
-	<th> <td>ID </td> <td>Stage_name </td> <td>Connect_str</td> <td>cmd </td> </th>
+	<tr> <th>ID </th> <th>Stage_name </th> <th>Connect_str</th> <th>Stage_type </th> <th>Createtime </th> </tr>
 	<tr>
 		<td>1</td>
 		<td>mysql-crm-marketing-crm</td>
@@ -57,6 +61,11 @@
 		<td>select * from t_account where status in(2,3,4)</td>
 	</tr>
 </table>
+
+<h2>ajax请求列表</h2>
+<table class="js-ajax-list">
+</table>	
+
 
 
 </body>

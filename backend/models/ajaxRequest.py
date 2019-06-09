@@ -1,5 +1,16 @@
-from models import db,cursor
+from models import db,cursor,Db
 import time
+
+def getList():
+    sql = "select * from t_ajax_request order by id desc "
+    res = Db.fetch_all(sql)
+    print(res)
+    return res
+    """
+    db.ping(reconnect=True)
+    cursor.execute(sql)
+    return cursor.fetchall()
+    """
 
 def saveAjax(data):
     initiatorUrl = data['initiator_url']

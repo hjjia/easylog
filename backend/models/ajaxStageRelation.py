@@ -1,4 +1,4 @@
-from model import db,cursor
+from models import db,cursor
 from flask import jsonify
 import time
 

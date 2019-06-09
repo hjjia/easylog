@@ -1,6 +1,8 @@
 var name = "options.js";
 console.log(name);
 
+// todo jk 控制页面滚动， gg 回到顶部， G 去页面底部
+
 
 // 时间戳 转化为字符串格式
 function timetrans(date){
@@ -46,6 +48,7 @@ $('.js-add-stage').on('click',function(){
 
 
 $(document).ready(function(){
+	// 步骤列表
     $.ajax({
         url:host+'/stage-list',
         dataType:"json",
@@ -58,6 +61,24 @@ $(document).ready(function(){
             }
             console.log(str);
             $('.js-stage-list').html(str);
+        },
+        error:function(err) {
+            alert("server is busy");
+        }
+    });
+
+	// ajax 请求列表
+    $.ajax({
+        url:host+'/ajax-request-list',
+        dataType:"json",
+        type:"get",
+        success:function(res) {
+			var str = '<tr> <th>ID </th> <th>Host</th> <th>Url</th> <th>Request Url</th> <th>Time </th> </tr>';
+            for(var i= 0; i< res.length; i++) {
+                var line = '<tr> <td>'+res[i].id+'</td> <td>'+res[i].host+'</td> <td>'+res[i].initiator_url+'</td><td>'+res[i].ajax_url+'</td> <td>'+timetrans(res[i].create_time)+'</td> </tr>';
+                str = str + line;
+            }
+            $('.js-ajax-list').html(str);
         },
         error:function(err) {
             alert("server is busy");
