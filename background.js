@@ -31,15 +31,52 @@ function parseUrl(url) {
 
 */
 
+
+
 var currentUrl = '';
 var ajaxRet = {};
 var host = "http://www.a.com:5000";
 var url1 = host+'/ajax-request'; // 触发记录日志的ajax请求
 var url2 = host + '/get-log'; // 获取日志内容
+
+
+// oUpdated
+/*
+onUpdated 事件
+URL更新事件监听， 一般访问一个URL会触发两次，
+访问的时候触发，状态为loading,
+访问完成的时候触发 状态为complete
+chrome.tabs.onUpdated.addListener(function (id, info, tab) {
+    if (tab.status === 'loading') {
+        updateBrowserAction(id, tab.url);
+    }
+});
+*/
+// chrome.tabs.onUpdated.addListener(changeTab);
+// tab被激活
+//当tab页被激活的时候触发
+//即切换tab页，或者打开关闭tab都会触发。
+
+//todo 切换tab，popup页面也要对应刷新
+// 只记录当前tab的请求
+chrome.tabs.onActivated.addListener(function (activeInfo) {
+    console.log('切换tab',Date.now())
+    if (activeInfo.tabId) {
+        chrome.tabs.get(activeInfo.tabId, function (tab) {
+           // updateBrowserAction(tab.id, tab.url);
+			console.log("change tab ",activeInfo);
+			console.log("tab ",tab);
+			currentUrl = tab.url;
+        });
+    }
+});
+
+
 //chrome.webRequest.onCompleted.addListener (
 chrome.webRequest.onBeforeRequest.addListener(
 
     function(details) {
+        console.log('on beforerequest',Date.now())
 		//if(details.url.indexOf('used_by_contents') != -1) {
 		if(details.type == "xmlhttprequest"){
 			if(details.url.indexOf(host) == -1 
@@ -52,7 +89,7 @@ chrome.webRequest.onBeforeRequest.addListener(
                 //  获取ajax请求的参数
 				console.log('details',details);
                 var params = {};
-                if(details.method == 'POST') {
+                if(details.method == 'POST' && details.requestBody) {
 					if (details.requestBody.formData) {  // form表单的格式
 						params = details.requestBody.formData;
 					} else if (details.requestBody.raw) { // post请求的数据，raw格式
@@ -65,10 +102,20 @@ chrome.webRequest.onBeforeRequest.addListener(
                     params =  parseUrl(details.url);
                 }
 
-				chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-					    console.log('chrome.tabs.query',tabs[0].url);
-					   currentUrl = tabs[0].url;
-				});
+
+                // todo 如何解决切换tab后，不能获取原先的浏览器url地址？？？？
+                if(!currentUrl) { // 如果切换了tab，这个地址就会改变, 如果只有一个tab，初始化的时候，它为空
+                    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+                            console.log('chrome.tabs.query',tabs[0].url);
+                            console.log('chrome.tabs.query tabs',tabs);
+                           currentUrl = tabs[0].url;
+                    });
+                }
+                /*
+                chrome.tabs.query({'currentWindow':true},fucntion(tabs) {
+                           currentUrl = tabs[0].url;
+                });
+                */
 
 				/*,getSelected将要被废弃
 				chrome.tabs.getSelected(null, function(tab) {
@@ -108,32 +155,6 @@ chrome.webRequest.onBeforeRequest.addListener(
 changeTab = function(tabId, changeInfo, tab) {
     console.log(tabId, changeInfo, tab);
 }
-// oUpdated
-/*
-onUpdated 事件
-URL更新事件监听， 一般访问一个URL会触发两次，
-访问的时候触发，状态为loading,
-访问完成的时候触发 状态为complete
-chrome.tabs.onUpdated.addListener(function (id, info, tab) {
-    if (tab.status === 'loading') {
-        updateBrowserAction(id, tab.url);
-    }
-});
-*/
-// chrome.tabs.onUpdated.addListener(changeTab);
-// tab被激活
-//当tab页被激活的时候触发
-//即切换tab页，或者打开关闭tab都会触发。
-
-//todo 切换tab，popup页面也要对应刷新
-chrome.tabs.onActivated.addListener(function (activeInfo) {
-    if (activeInfo.tabId) {
-        chrome.tabs.get(activeInfo.tabId, function (tab) {
-           // updateBrowserAction(tab.id, tab.url);
-			console.log("change tab ",activeInfo);
-        });
-    }
-});
 
 var logData = {};
 // 监听content_sript.js发送过来的数据 var msg = { "title": $("title").html(), "url": window.location.href}
