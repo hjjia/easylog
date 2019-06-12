@@ -34,6 +34,7 @@ function parseUrl(url) {
 
 
 var currentUrl = '';
+var currentActiveUrl = '';
 var ajaxRet = {};
 var host = "http://www.a.com:5000";
 var url1 = host+'/ajax-request'; // 触发记录日志的ajax请求
@@ -60,12 +61,12 @@ chrome.tabs.onUpdated.addListener(function (id, info, tab) {
 //todo 切换tab，popup页面也要对应刷新
 // 只记录当前tab的请求
 chrome.tabs.onActivated.addListener(function (activeInfo) {
-    console.log('切换tab',Date.now())
+    //console.log('切换tab',Date.now())
     if (activeInfo.tabId) {
         chrome.tabs.get(activeInfo.tabId, function (tab) {
            // updateBrowserAction(tab.id, tab.url);
-			console.log("change tab ",activeInfo);
-			console.log("tab ",tab);
+			//console.log("change tab ",activeInfo);
+			//console.log("tab ",tab);
 			currentUrl = tab.url;
         });
     }
@@ -76,9 +77,16 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 chrome.webRequest.onBeforeRequest.addListener(
 
     function(details) {
-        console.log('on beforerequest',Date.now())
+        //console.log('on beforerequest',Date.now())
 		//if(details.url.indexOf('used_by_contents') != -1) {
-		if(details.type == "xmlhttprequest"){
+        // todo 如何解决切换tab后，不能获取原先的浏览器url地址？？？？
+        // 暂时先这样，回调噩梦。。。
+        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+               currentActiveUrl = tabs && tabs[0] && tabs[0].url;
+        });
+        console.log('currentUrl = ',currentUrl,'   currentActiveUrl = ',  currentActiveUrl);
+
+		if(details.type == "xmlhttprequest" && currentUrl == currentActiveUrl ){
 			if(details.url.indexOf(host) == -1 
 				&& details.url.indexOf("http://chrome-extension") == -1
 				&& details.url.indexOf("https://chrome-extension") == -1
@@ -87,7 +95,7 @@ chrome.webRequest.onBeforeRequest.addListener(
                 //console.log('ajax_url',details.url);
                 //console.log(details.statusCode);
                 //  获取ajax请求的参数
-				console.log('details',details);
+				//console.log('details',details);
                 var params = {};
                 if(details.method == 'POST' && details.requestBody) {
 					if (details.requestBody.formData) {  // form表单的格式
@@ -96,21 +104,13 @@ chrome.webRequest.onBeforeRequest.addListener(
 						var postedString = details.requestBody.raw.map(function(data) { return String.fromCharCode.apply(null, new Uint8Array(data.bytes)) }).join('');
 						params = JSON.parse(postedString);
 					} else {
-						console.log('not support post data type',details.requestBody)
+						//console.log('not support post data type',details.requestBody)
 					}
                 } else {
                     params =  parseUrl(details.url);
                 }
 
 
-                // todo 如何解决切换tab后，不能获取原先的浏览器url地址？？？？
-                if(!currentUrl) { // 如果切换了tab，这个地址就会改变, 如果只有一个tab，初始化的时候，它为空
-                    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-                            console.log('chrome.tabs.query',tabs[0].url);
-                            console.log('chrome.tabs.query tabs',tabs);
-                           currentUrl = tabs[0].url;
-                    });
-                }
                 /*
                 chrome.tabs.query({'currentWindow':true},fucntion(tabs) {
                            currentUrl = tabs[0].url;
@@ -137,10 +137,10 @@ chrome.webRequest.onBeforeRequest.addListener(
 					data:params,
 					success:function(msg){
 						ajaxRet = msg;
-						console.log("ajax return", msg);// 成功之后执行这里面的代码
+						//console.log("ajax return", msg);// 成功之后执行这里面的代码
 					},
 					error:function(e){
-						console.log(e)//请求失败是执行这里的函数
+						//console.log(e)//请求失败是执行这里的函数
 					}
 				});
 			} 
@@ -170,10 +170,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendRequest){
         dataType:"json",
         success:function(msg){
             logData.ret = msg;
-            console.log('log',msg);
+            //console.log('log',msg);
         },
         error:function(err) {
-            console.log(err)
+            //console.log(err)
         }
     });
 });

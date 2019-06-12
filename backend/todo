@@ -1,0 +1,14 @@
+1. 注册登录
+2. 全局切换version
+3. 跨步骤传递变量，通过特殊标记，标记全局变量，写入redis，各个步骤，就可以通过redis获取全局变量，，新增一个字段，存放全局变量数组
+    cmd_format: ['select * from t_user where id = ___id___'] ,global_var : ['id','name']
+    cmd_format: ['select * from t_user where id = ___id___']
+    在解析的时候，先判断global_var不为空，说明有全局变量
+    在re callback中，把全局变量写入redis，hashtable   easylog_gloable_{ajax_id}_{user_id}  id => 1234, name => "lisi"
+    在 params.update(mapInfo) # 把mapInfo的键值对，更新到params中, 还要把全局变量,update到 params中 ,params.update(global_vars)
+4. 页面布局优化
+5. 添加执行命令的入口。在popup页面直接执行某些命令，并返回结果。
+
+
+备注：
+上述排名不分先后

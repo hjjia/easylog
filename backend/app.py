@@ -3,6 +3,7 @@ from time import time
 from models import user,stage,ajaxRequest,log,ajaxStageRelation
 from utils import cmd
 from urllib.parse import urlparse
+import json
 
 app = Flask(__name__)
 
@@ -15,6 +16,8 @@ from routes import *
 @app.route("/ajax-request",methods=["post"])
 def hello():
     data = request.form
+    if not data:
+        return "必要参数缺失"
     url = data['easylog_generatelog_url'] # ajax请求url
     res = urlparse(url)
     # ParseResult(scheme='http', netloc='www.aa.com.cn:8908', path='/asdfasf/teste', params='', query='id=12&name=asfsdfd', fragment='')

@@ -89,7 +89,8 @@ $(document).ready(function(){
 $(".js-save-relation").on('click',function(){
 	var ajaxId = $('.js-ajax-id').val(),
 		stageId = $('.js-stage-id').val(),
-		cmdFormat = $('.js-cmd-format').val();
+		cmdFormat = [$('.js-cmd-format').val()];
+
 // @app.route("/add-stage-ajax-relation",methods=['post'])
 	$.ajax({
 		url:host+'/add-stage-ajax-relation',

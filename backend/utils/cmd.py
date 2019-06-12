@@ -40,6 +40,8 @@ def exec_cmd(data,params):
         exec_redis(mapInfo,cmd)
     return "result"
 
+## todo mysql 跨库查询，中间变量的传递
+
 def exec_mysql(dsn,sqls):
     """
     mysql -u [username] -p -e "create database somedb"
