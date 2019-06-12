@@ -90,6 +90,7 @@ $(".js-save-relation").on('click',function(){
 	var ajaxId = $('.js-ajax-id').val(),
 		stageId = $('.js-stage-id').val(),
 		cmdFormat = [$('.js-cmd-format').val()];
+		cmdFormat = JSON.stringify(cmdFormat);
 
 // @app.route("/add-stage-ajax-relation",methods=['post'])
 	$.ajax({
@@ -98,7 +99,8 @@ $(".js-save-relation").on('click',function(){
 		type:"post",
 		data:{"ajax_id":ajaxId,"stage_id":stageId,"cmd_format":cmdFormat},
 		success:function(res) {
-		    window.location.reload();
+			console.log(res);
+		    //window.location.reload();
 		},
 		error:function(err) {
 			alert("server is busy");

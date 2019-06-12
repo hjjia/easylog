@@ -14,7 +14,7 @@ import pymysql
 def exec_cmd(data,params):
     stage_type = data['stage_type']
     connect_str = data['connect_str']
-    cmd_format = data['cmd_format']
+    cmd_format = json.loads(data['cmd_format'])
     """
     :param stage_type: 1mysql,2ssh,3redis ....
     :param connect_str: {"host":"127.0.0.1...} 或 [{"host":127.0.0.1,},{"host:192.168.12.2}...]
@@ -26,11 +26,12 @@ def exec_cmd(data,params):
     mapInfo = json.loads(connect_str)
     if isinstance(mapInfo,dict) and isinstance(params,dict):
         params.update(mapInfo) # 把mapInfo的键值对，更新到params中
+        print(params)
     def sub_callback(m):
         return params[m.group(1)]
     cmd = []
     for line in cmd_format:
-        cmd.append(re.sub("___(\w+)___",sub_callback,line))
+        cmd.append(re.sub("___([a-zA-Z]+?)___",sub_callback,line))
     if stage_type == 1:
         exec_mysql(mapInfo,cmd)
     elif stage_type == 2:

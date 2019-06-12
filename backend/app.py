@@ -26,9 +26,10 @@ def hello():
     # todo 根据ajax请求的ajax_url,和地址栏，找到关联的stage，并且，执行相应的命令，获取指定步骤下的日志信息。并保存到表中
     ajaxRequest.saveAjax({"host":data['host'],"initiator_url":initiator,"ajax_url":ajax_url})
     stageList = ajaxRequest.getStageList(initiator,ajax_url)
+    print(stageList)
     for stage in stageList:
         logData = stage
-        logData['log_data'] = cmd.exec_cmd(stage,data)
+        logData['log_data'] = cmd.exec_cmd(stage,dict(data))
         logData['payload'] = data
         logData['initiator_url'] = url
         logData['ajax_url'] = ajax_url
@@ -66,7 +67,6 @@ def relation():
             "cmd_format":"select * from t_ajax_request where id = ___id___"
             }
     data = request.form
-    print(data)
     ajaxStageRelation.saveRelation(data)
     return jsonify(data)
 
