@@ -18,7 +18,7 @@ function parseUrl(url) {
             pl     = /\+/g,  // Regex for replacing addition symbol with a space
             search = /([^&=]+)=?([^&]*)/g,
             decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-            query  = window.location.search.substring(1);
+            query  = url.substr(url.indexOf("?")+1);
 
     var urlParams = {};
     while (match = search.exec(query)) {
@@ -125,10 +125,12 @@ chrome.webRequest.onBeforeRequest.addListener(
 				*/
 
 
+                params['ajax_method'] = details.method;
                 params['easylog_generatelog_url'] = details.url;
 				params['host'] = details.initiator; // 地址栏host,只有域名，没有路径 http://www.bb.com
                 params['easylog_initiator'] = currentUrl; //地址栏 http://www.bbb.com/123123/2343242
                 params['location_href'] = window.location.href; // chrome-extension://kpkhgljdoibppbphdelmgcadephnkakn/_generated_background_page.html
+                console.log("parmams,",params);
 				$.ajax({
 					type: "post", // 一般用 POST 或 GET 方法
 					// 请求后端，获取日志信息
@@ -162,15 +164,15 @@ var logData = {};
 // 通过当前url，获取当前页面，曾经发生的ajax请求,以及他们的日志信息
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendRequest){
-	logData = request; // request 就是content_script发送过来的json串 ,通过地址栏里的url，获取该路径下的ajax请求产生的日志列表
+	//logData = request; // request 就是content_script发送过来的json串 ,通过地址栏里的url，获取该路径下的ajax请求产生的日志列表
     $.ajax({
-        url: url2,
+        url: url2, //  host + '/get-log'; // 获取日志内容
         type: "get",
-        data: logData,
+        data: request,
         dataType:"json",
         success:function(msg){
             logData.ret = msg;
-            //console.log('log',msg);
+            console.log('log',msg);
         },
         error:function(err) {
             //console.log(err)

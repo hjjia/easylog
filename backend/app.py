@@ -3,9 +3,20 @@ from time import time
 from models import user,stage,ajaxRequest,log,ajaxStageRelation
 from utils import cmd
 from urllib.parse import urlparse
-import json
 
 app = Flask(__name__)
+
+successRet = {
+    "code":200,
+    "msg":"success",
+    "data":[]
+}
+
+failRet = {
+    "code":400,
+    "msg":"faied",
+    "data":[]
+}
 
 '''
 from routes import *
@@ -15,8 +26,8 @@ from routes import *
 ## ajax请求，产生日志记录
 @app.route("/ajax-request",methods=["post"])
 def hello():
-    data = request.form
-    if not data:
+    data = dict(request.form)
+    if not data or not ('ajax_method' in data) :
         return "必要参数缺失"
     url = data['easylog_generatelog_url'] # ajax请求url
     res = urlparse(url)
@@ -26,16 +37,19 @@ def hello():
     # todo 根据ajax请求的ajax_url,和地址栏，找到关联的stage，并且，执行相应的命令，获取指定步骤下的日志信息。并保存到表中
     ajaxRequest.saveAjax({"host":data['host'],"initiator_url":initiator,"ajax_url":ajax_url})
     stageList = ajaxRequest.getStageList(initiator,ajax_url)
-    print(stageList)
-    for stage in stageList:
-        logData = stage
-        logData['log_data'] = cmd.exec_cmd(stage,dict(data))
-        logData['payload'] = data
-        logData['initiator_url'] = url
-        logData['ajax_url'] = ajax_url
-        log.saveLog(logData)
+    try:
+        for stage in stageList:
+            logData = stage
+            logData['ajax_payload'] = data
+            logData['ajax_method'] = data['ajax_method']
+            logData['initiator_url'] = initiator
+            logData['ajax_url'] = ajax_url
+            logData['log_data'] = cmd.exec_cmd(stage,data)
+            log.saveLog(logData)
+    except Exception as err:
+        return jsonify(err)
 
-    return jsonify(data)
+    return jsonify(successRet)
 
 # 返回日志信息
 @app.route("/get-log")

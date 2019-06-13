@@ -27,16 +27,55 @@ function timetrans(date){
 
 console.log("popup",timetrans(Date.now()));
 // 相当于点击了插件的icon
+//var data = '',ajaxdata = '';
 document.addEventListener('DOMContentLoaded', function () {
-	console.log(Date.now());
-	console.log("loaded",timetrans(Date.now()));
-    var data = chrome.extension.getBackgroundPage().logData;
-    var ajaxdata = chrome.extension.getBackgroundPage().ajaxRet;
+    var logData = chrome.extension.getBackgroundPage().logData;
+    //ajaxdata = chrome.extension.getBackgroundPage().ajaxRet;
 
-	//console.log('log data',data);
-	//console.log('ajax data',ajaxdata);
-        //data: JSON.stringify(Data),
-    $(".result").html(timetrans(Date.now())+"<br/>"+JSON.stringify(data));
-    $(".ajaxresult").html(JSON.stringify(ajaxdata));
+    var ret = logData.ret;
+    var str = '';
+    //Array.prototype.push.apply(arr1,arr2);
+    // Object.keys(obj1);
+    var result = {};
+    for(var i=0; i< ret.length; i++) {
+        var itemLog = ret[i].log_data;
+
+        if(typeof(itemLog) == 'string') {
+            result[i] = itemLog;
+        }else if( typeof(itemLog) == "object" ) {
+            for (var key in itemLog) { //// 每条日志记录的 命令
+                if(!result.hasOwnProperty(key)) {
+                    result[key] = [];
+                }
+                Array.prototype.push.apply(result[key], itemLog[key])
+            }
+        }
+    }
+    //$(".log-data").html(timetrans(Date.now())+"<br/>"+JSON.stringify(logData.ret, undefined,4));
+    //timetrans(Date.now())+"<br/><br/>"+
+    $(".log-data").html(JSON.stringify(result, undefined,4));
+    //$(".ajaxresult").html(JSON.stringify(ajaxdata));
 });
 
+
+/*
+
+// arbitrary js object:
+var myJsObj = {a:'foo', 'b':'bar', c:[false,2,null, 'null']};
+
+// using JSON.stringify pretty print capability:
+var str = JSON.stringify(myJsObj, undefined, 4);
+
+// display pretty printed object in text area:
+document.getElementById('myTextArea').innerHTML = str;
+
+
+window.onload = function() {
+  console.log("onload" + Date())
+    data = chrome.extension.getBackgroundPage().logData;
+    ajaxdata = chrome.extension.getBackgroundPage().ajaxRet;
+
+    $(".result").html(timetrans(Date.now())+"<br/>"+JSON.stringify(data));
+    $(".ajaxresult").html(JSON.stringify(ajaxdata));
+}
+*/

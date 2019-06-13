@@ -8,6 +8,10 @@
     在 params.update(mapInfo) # 把mapInfo的键值对，更新到params中, 还要把全局变量,update到 params中 ,params.update(global_vars)
 4. 页面布局优化
 5. 添加执行命令的入口。在popup页面直接执行某些命令，并返回结果。
+6. 对浏览器url地址，initiator_url， 应该做正则匹配，比如 www.bbb.com/user/12  和 www.bbb.com/user/13
+SELECT * FROM `t_ajax_request` where initiator_url like 'http://marketing-admin.vivo.xyz/admin/audit-center/subject-qualification-detail/%/%/subject-first';
+
+    1. 相似的url可以用一个模式来概括，比如 www.bb.com/user/___id___/___uuid___/info, t_ajax_request, 多加一个字段来存该值
 
 
 备注：
