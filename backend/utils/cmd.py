@@ -139,7 +139,8 @@ class DateEncoder(json.JSONEncoder):
 
 
 def json_encode(data):
-    return json.dumps(data,cls=DateEncoder)
+    json_str = json.dumps(data,cls=DateEncoder)
+    return json_str.replace("'","#_#_#")
 
 def json_decode(json_str):
     '''

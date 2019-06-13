@@ -19,9 +19,10 @@ from utils.cmd import json_encode,json_decode
 
 
 def saveLog(data):
+    print("ssh_log_data",data)
+    print("json log",json_encode(data['log_data']))
     sql = "insert t_log(ajax_id,stage_id, ajax_url, initiator_url, ajax_method,ajax_payload,cmd,log_data,create_time)" \
-          " values(%d,%d,'%s','%s','%s','%s','%s','%s',%d)"%(data['ajax_id'],data['stage_id'],data['ajax_url'],data['initiator_url'],data['ajax_method'],
-                                  json_encode(data['ajax_payload']),json_encode(data['cmd_format']),json_encode(data['log_data']),int(time.time()))
+          " values(%d,%d,'%s','%s','%s','%s','%s','%s',%d)"%(data['ajax_id'],data['stage_id'],data['ajax_url'],data['initiator_url'],data['ajax_method'],json_encode(data['ajax_payload']),json_encode(data['cmd_format']),json_encode(data['log_data']),int(time.time()))
 
     return Db.insert(sql)
 

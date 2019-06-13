@@ -20,8 +20,8 @@ failRet = {
 
 '''
 from routes import *
- 可以把各种路由，写在routes.py的文件中，
- 从而简化app.py的内容
+可以把各种路由，写在routes.py的文件中，
+从而简化app.py的内容
 '''
 ## ajax请求，产生日志记录
 @app.route("/ajax-request",methods=["post"])
