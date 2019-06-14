@@ -15,4 +15,4 @@ SELECT * FROM `t_ajax_request` where initiator_url like 'http://marketing-admin.
 
 
 备注：
-上述排名不分先后
+上述排名不分先后, 不太成熟的想法

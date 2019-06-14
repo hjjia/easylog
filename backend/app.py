@@ -1,7 +1,7 @@
 from flask import Flask, Response, jsonify, request
 from time import time
 from models import user,stage,ajaxRequest,log,ajaxStageRelation
-from utils import cmd
+from utils import cmd,cache
 from urllib.parse import urlparse
 
 app = Flask(__name__)
@@ -89,7 +89,15 @@ def ajax_request_list():
     res = ajaxRequest.getList()
     return jsonify(res)
 
-    
+@app.route("/cache")
+def cache_test():
+    key = request.args.get("key")
+    cache.set(key,"val")
+    cache.set("name","zhangsan")
+    name = cache.get("name")
+    cache.delete("name")
+    cache.set("age",12)
+    return jsonify({"name":name})
 
 
 
