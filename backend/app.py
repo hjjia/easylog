@@ -1,7 +1,8 @@
 from flask import Flask, Response, jsonify, request
 from time import time
 from models import user,stage,ajaxRequest,log,ajaxStageRelation
-from utils import cmd,cache
+from utils import cmd
+from utils.cache import Cache
 from urllib.parse import urlparse
 
 app = Flask(__name__)
@@ -55,6 +56,7 @@ def hello():
 @app.route("/get-log")
 def vlog():
     url = urlparse(request.args.get("url"))
+    print(url)
     initiator = url.scheme + "://" +url.netloc + url.path #地址栏
     ret = log.getLog(initiator)
     return jsonify(ret)
@@ -75,11 +77,6 @@ def stage_list():
 
 @app.route("/add-stage-ajax-relation",methods=['post'])
 def relation():
-    data = {
-            "stage_id":1,
-            "ajax_id":1,
-            "cmd_format":"select * from t_ajax_request where id = ___id___"
-            }
     data = request.form
     ajaxStageRelation.saveRelation(data)
     return jsonify(data)
@@ -92,11 +89,11 @@ def ajax_request_list():
 @app.route("/cache")
 def cache_test():
     key = request.args.get("key")
-    cache.set(key,"val")
-    cache.set("name","zhangsan")
-    name = cache.get("name")
-    cache.delete("name")
-    cache.set("age",12)
+    Cache.set(key,"val")
+    Cache.set("name",key)
+    name = Cache.get("name")
+    Cache.delete("name")
+    Cache.set("age",12)
     return jsonify({"name":name})
 
 

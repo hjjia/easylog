@@ -5,12 +5,12 @@
 // 在popup.js中，就可以jq直接操作 popup.html中的dom了。
 
 var msg = {
-    "title": $("title").html(),
+    //"title": $("title").html(),
     "url": window.location.href
 };
 
-chrome.runtime.sendMessage(msg);
 /*
+chrome.runtime.sendMessage(msg);
 var postInfo = $("div.postDesc");
 if(postInfo.length!=1){
 	chrome.runtime.sendMessage({type:"cnblog-article-information", error:"获取文章信息失败."});

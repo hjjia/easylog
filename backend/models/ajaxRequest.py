@@ -1,11 +1,11 @@
 from models import Db
-import time
+import time,re
 
-def getList(page=1,pageSize=10):
-    offset = int((page-1) * pageSize)
-    sql = "select * from t_ajax_request order by id desc limit %d,%d " % (offset,pageSize)
+def getList(keyword=""):
+    sql = "select distinct(initiator_url) as initiator from t_ajax_request"
     res = Db.fetch_all(sql)
     return res
+
     """
     db.ping(reconnect=True)
     cursor.execute(sql)
@@ -27,6 +27,14 @@ def saveAjax(data):
 
 
 def getStageList(initiatorUrl,ajaxUrl):
+    sql = "select url_format, from t_ajax_stage_relation";
+    urlFormatList = Db.fetch_all(sql)
+    for item in urlFormatList:
+        urlFormat = item['url_format']
+        reObj = re.compile(urlFormat)
+        if reObj.match(initiatorUrl) is not None:
+            pass
+
     sql = "select ar.host, ar.initiator_url,ar.ajax_url, asr.cmd_format, asr.ajax_id, asr.stage_id, st.connect_str, st.stage_name, st.stage_type" \
           " from t_ajax_request ar join t_ajax_stage_relation asr on ar.id = asr.ajax_id join t_stage st on asr.stage_id = st.id " \
           " where ar.initiator_url = '%s' and ar.ajax_url = '%s'"  %(initiatorUrl,ajaxUrl)

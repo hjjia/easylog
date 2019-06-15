@@ -1,4 +1,5 @@
 <html>
+<meta charset="utf-8"/>
 <style>
 body {
 	background:transparent;
@@ -19,12 +20,20 @@ button {
 	height: 250px;
 	background-color:gray;
 }
+.js-btn {
+	width: 80px;
+	height: 30px;
+	margin:5px;
+}
 </style>
 <head>
 
 </head>
 	<body>
-		<h1>hello world</h1>
+		<div>
+			<h1>hello world</h1>
+			<button class="js-btn">获取日志</buttonc>
+		</div>
 		<textarea class="log-data"></textarea>
 		<script src="js/jquery.js"></script>
 		<script src="popup.js"></script>

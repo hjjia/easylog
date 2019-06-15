@@ -1,5 +1,6 @@
 import pymysql
 import pymysqlpool
+from conf.mysql import mysqlConfig
 
 class DbPool:
     
@@ -60,8 +61,10 @@ class DbPool:
         
 
 
-config={'host':'127.0.0.1', 'user':'easylog', 'password':'123456', 'database':'easy_log', 'autocommit':True,'charset':'utf8','cursorclass':pymysql.cursors.DictCursor}
-Db = DbPool.getInstance(size=10,name="dbpool",config=config)
+#config={'host':mysqlConfig['host'], 'user':mysql, 'password':'123456', 'database':'easy_log', 'autocommit':True,'charset':'utf8','cursorclass':pymysql.cursors.DictCursor}
+mysqlConfig["autocommit"] = True
+mysqlConfig["cursorclass"] = pymysql.cursors.DictCursor
+Db = DbPool.getInstance(size=10,name="dbpool",config=mysqlConfig)
 
 
 

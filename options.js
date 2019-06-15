@@ -71,33 +71,38 @@ $(document).ready(function(){
         dataType:"json",
         type:"get",
         success:function(res) {
-			var str = '<tr> <th>ID </th> <th>Host</th> <th>Url</th> <th>Request Url</th> <th>Time </th> </tr>';
+			var str = ""
             for(var i= 0; i< res.length; i++) {
                 var line = '<tr> <td>'+res[i].id+'</td> <td>'+res[i].host+'</td> <td>'+res[i].initiator_url+'</td><td>'+res[i].ajax_url+'</td> <td>'+timetrans(res[i].create_time)+'</td> </tr>';
-                str = str + line;
+                str = str + '<option value="'+res[i].initiator+'">'+res[i].initiator+'</option>';
             }
-            $('.js-ajax-list').html(str);
+            $('.js-ajax-url').html(str);
         },
         error:function(err) {
             alert("server is busy");
         }
     });
 	//do something
+
+	$(".js-ajax-url").on('change',function(){
+	    var url = $(this).val();
+	    $(".js-url-format").val(url);
+	});
+
 });
 
 
 $(".js-save-relation").on('click',function(){
-	var ajaxId = $('.js-ajax-id').val(),
-		stageId = $('.js-stage-id').val(),
-		cmdFormat = [$('.js-cmd-format').val()];
-		cmdFormat = JSON.stringify(cmdFormat);
+	var	stageId = $('.js-stage-id').val(),
+		urlFormat = $('.js-url-format').val(),
+		cmdFormat = JSON.stringify([$('.js-cmd-format').val()]);
 
 // @app.route("/add-stage-ajax-relation",methods=['post'])
 	$.ajax({
 		url:host+'/add-stage-ajax-relation',
 		dataType:"json",
 		type:"post",
-		data:{"ajax_id":ajaxId,"stage_id":stageId,"cmd_format":cmdFormat},
+		data:{"url_format":urlFormat,"stage_id":stageId,"cmd_format":cmdFormat},
 		success:function(res) {
 			console.log(res);
 		    //window.location.reload();

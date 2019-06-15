@@ -1,47 +1,34 @@
-from utils.cmd import json_decode,json_encode
+from conf.redis import redisConfig
+import redis
 
-cache_file = "./cache_data"
-def get(key):
-    with open(cache_file,'rt') as f:
-        jsonData = f.read()
-        dictData = json_decode(jsonData)
-        val = dictData[key]
-        return val.replace("#_#_#","'")
+class cacheObj:
 
-def set(key,val):
-    if isinstance(val,str):
-        val = val.replace("'","#_#_#")
-    else:
-        return False
+    __cache = None
 
-    with open(cache_file,'rt') as f:
-        jsonData = f.read()
-        if not jsonData:
-            dictData = {}
+    def __init__(self, config=None):
+        self.__cache = redis.Redis(**config)
+
+    @classmethod
+    def getInstance(cls, *args, **kwargs):
+        if cls.__cache:
+            return cls.__cache
         else:
-            dictData = json_decode(jsonData)
-        dictData[key] = val
+            cls.__cache = cacheObj(*args, **kwargs)
+            return cls.__cache
 
-    with open(cache_file,'wt') as f:
-        data = json_encode(dictData)
-        f.write(data)
-        return True
+    def get(self,key):
+        res = self.__cache.get(key)
+        return res
 
+    def set(self,key, val):
+        res = self.__cache.set(key,val)
+        return res
 
-def delete(key):
-    with open(cache_file,'rt') as f:
-        jsonData = f.read()
-        if not jsonData: # 没有数据，直接返回
-            return True
-        else:
-            dictData = json_decode(jsonData)
-            if key not in dictData: # 不存在这个key
-                return True
-            del dictData[key]
+    def delete(self,key):
+        return self.__cache.delete(key)
 
-    with open(cache_file,'wt') as f:
-        data = json_encode(dictData)
-        f.write(data)
-        return True
+redisConfig['decode_responses'] = True
+Cache = cacheObj.getInstance(config=redisConfig)
+
 
 

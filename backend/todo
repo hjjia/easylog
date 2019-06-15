@@ -14,5 +14,6 @@ SELECT * FROM `t_ajax_request` where initiator_url like 'http://marketing-admin.
     1. 相似的url可以用一个模式来概括，比如 www.bb.com/user/___id___/___uuid___/info, t_ajax_request, 多加一个字段来存该值
 
 
+7. 可扩展，步骤支持python脚本。
 备注：
 上述排名不分先后, 不太成熟的想法

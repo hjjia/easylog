@@ -1,14 +1,3 @@
-
-/*
-  chrome.storage.sync.get('color', function(data) {
-    changeColor.style.background= data.color;
-    //changeColor.style.backgroundColor = '#3aa757';
-    changeColor.setAttribute('value', 12);
-  });
-  */
-
-
-
 // 时间戳 转化为字符串格式
 function timetrans(date){
 		if(String(date).length < 13) {
@@ -25,57 +14,50 @@ function timetrans(date){
 	    return Y+M+D+h+m+s;
 }
 
-console.log("popup",timetrans(Date.now()));
-// 相当于点击了插件的icon
-//var data = '',ajaxdata = '';
-document.addEventListener('DOMContentLoaded', function () {
-    var logData = chrome.extension.getBackgroundPage().logData;
-    //ajaxdata = chrome.extension.getBackgroundPage().ajaxRet;
+var host = "http://www.a.com:5000";
+var url1 = host+'/ajax-request'; // 触发记录日志的ajax请求
+var url2 = host + '/get-log'; // 获取日志内容
 
-    var ret = logData.ret;
-    var str = '';
-    //Array.prototype.push.apply(arr1,arr2);
-    // Object.keys(obj1);
-    var result = {};
-    for(var i=0; i< ret.length; i++) {
-        var itemLog = ret[i].log_data;
+$(".js-btn").on("click",function(){
+    chrome.tabs.executeScript({
+        code:"url = document.location.href;" // 在popup页面获取浏览器地址
+    },function(res){
+        var params = {'url':res[0]}; // res是executeScript执行脚本返回值，是一个数组。
+        var logData = [];
+        $.ajax({
+            url: url2, //  host + '/get-log'; // 获取日志内容
+            type: "get",
+            data: params,
+            async:false,
+            dataType:"json",
+            success:function(msg){
+                logData = msg;
+                //console.log('log',msg);
+            },
+            error:function(err) {
+                alert(err);
+            }
+        });
 
-        if(typeof(itemLog) == 'string') {
-            result[i] = itemLog;
-        }else if( typeof(itemLog) == "object" ) {
-            for (var key in itemLog) { //// 每条日志记录的 命令
-                if(!result.hasOwnProperty(key)) {
-                    result[key] = [];
+
+        //Array.prototype.push.apply(arr1,arr2);
+        // Object.keys(obj1);
+        var result = {};
+        for(var i=0; i< logData.length; i++) {
+            var itemLog = logData[i].log_data;
+            if(typeof(itemLog) == 'string') {
+                result[i] = itemLog;
+            }else if( typeof(itemLog) == "object" ) {
+                for (var key in itemLog) { //// 每条日志记录的 命令
+                    if(!result.hasOwnProperty(key)) {
+                        result[key] = [];
+                    }
+                    Array.prototype.push.apply(result[key], itemLog[key])
                 }
-                Array.prototype.push.apply(result[key], itemLog[key])
             }
         }
-    }
-    //$(".log-data").html(timetrans(Date.now())+"<br/>"+JSON.stringify(logData.ret, undefined,4));
-    //timetrans(Date.now())+"<br/><br/>"+
-    $(".log-data").html(JSON.stringify(result, undefined,4));
-    //$(".ajaxresult").html(JSON.stringify(ajaxdata));
-});
+        $(".log-data").html(JSON.stringify(result, undefined,4));
+    });
+})
 
 
-/*
-
-// arbitrary js object:
-var myJsObj = {a:'foo', 'b':'bar', c:[false,2,null, 'null']};
-
-// using JSON.stringify pretty print capability:
-var str = JSON.stringify(myJsObj, undefined, 4);
-
-// display pretty printed object in text area:
-document.getElementById('myTextArea').innerHTML = str;
-
-
-window.onload = function() {
-  console.log("onload" + Date())
-    data = chrome.extension.getBackgroundPage().logData;
-    ajaxdata = chrome.extension.getBackgroundPage().ajaxRet;
-
-    $(".result").html(timetrans(Date.now())+"<br/>"+JSON.stringify(data));
-    $(".ajaxresult").html(JSON.stringify(ajaxdata));
-}
-*/

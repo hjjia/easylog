@@ -13,6 +13,20 @@
           height: 200px;
           width: 300px;
 		}
+		.js-cmd-format {
+          height: 400px;
+          width: 600px;
+		}
+		.js-url-format {
+			width: 900px;
+			height: 30px;
+			margin:2px;
+		}
+		.js-ajax-url {
+			width:900px;
+			height: 30px;
+			margin:2px;
+		}
       </style>
 </head>
 <body>
@@ -62,15 +76,15 @@
 	</tr>
 </table>
 
-<h2>ajax请求列表</h2>
-<table class="js-ajax-list">
-</table>	
-
 <hr/>
+
 <div>
-	<span>ajaxId</span><input name="ajax_id" class="js-ajax-id" value=""/><br/>
-	<span>stageID1</span><input name="stage_id" class="js-stage-id" value=""/><br/>
-	<span>cmdFormat1</span><input name="stage_cmd_format" class="js-cmd-format" value=""/>
+	<span>ajaxurl:</span> <select name="ajax_url" class="js-ajax-url">
+	</select>
+    <br/>
+	<span>urlFormat:</span><input name="url_format" class="js-url-format" value=""/><br/>
+	<span>stageID1:</span><input name="stage_id" class="js-stage-id" value=""/><br/>
+	<span>cmdFormat1:</span><br/><textarea name="stage_cmd_foramt" class="js-cmd-format"> </textarea><br/>
 	<input type="button" class="js-save-relation" value="保存关联"/>
 </div>
 

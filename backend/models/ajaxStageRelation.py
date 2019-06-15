@@ -1,20 +1,12 @@
 from models import Db
 import time
 
-'''
-
-    ajax_id int not null default 0 comment 'ajax请求id',
-    user_id int not null default 0 comment '用户id 0 就是公用的',
-    stage_id int not null default 0 comment '步骤id',
-    cmd_formatat varchar(2000) not null default '' comment '待执行的命令格式, 可能会有宏替换如 ___host___',
-    status  tinyint not null default 1 comment '1是可以，2是不可用'
-'''
 
 def saveRelation(data):
-    sql = "select id from t_ajax_stage_relation where ajax_id = %d and stage_id = %d"%(int(data['ajax_id']),int(data['stage_id']))
+    sql = "select id from t_ajax_stage_relation where url_format = '%s' and stage_id = %d"%(data['url_format'],int(data['stage_id']))
     if not Db.fetch_one(sql):
-        sql = "insert t_ajax_stage_relation(ajax_id,user_id,stage_id,cmd_format,create_time) values(%d,%d,%d,'%s',%d)" \
-              %(int(data['ajax_id']), 0,int(data['stage_id']),data['cmd_format'],int(time.time()))
+        sql = "insert t_ajax_stage_relation(url_format,user_id,stage_id,cmd_format,create_time) values('%s',%d,%d,'%s',%d)" \
+              %(data['url_format'], 0,int(data['stage_id']),data['cmd_format'],int(time.time()))
         lastId = Db.insert(sql)
         return lastId
     else:
