@@ -5,7 +5,7 @@ import time
 def saveRelation(data):
     sql = "select id from t_ajax_stage_relation where url_format = '%s' and stage_id = %d"%(data['url_format'],int(data['stage_id']))
     if not Db.fetch_one(sql):
-        sql = "insert t_ajax_stage_relation(url_format,user_id,stage_id,cmd_format,create_time) values('%s',%d,%d,'%s',%d)" \
+        sql = "insert t_ajax_stage_relation(ajax_id,url_format,user_id,stage_id,cmd_format,create_time) values('%s',%d,%d,'%s',%d)" \
               %(data['url_format'], 0,int(data['stage_id']),data['cmd_format'],int(time.time()))
         lastId = Db.insert(sql)
         return lastId

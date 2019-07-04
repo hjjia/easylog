@@ -86,7 +86,9 @@ chrome.webRequest.onBeforeRequest.addListener(
 				&& details.url.indexOf("chrome://extensions") ==  -1
 			) {
                 //  获取ajax请求的参数
+				//  还要获取cookie里的kv
                 var params = {};
+
                 if(details.method == 'POST' && details.requestBody) {
 					if (details.requestBody.formData) {  // form表单的格式
 						params = details.requestBody.formData;

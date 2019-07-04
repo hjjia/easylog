@@ -12,32 +12,18 @@ create table t_user (
 
 -- ajax请求记录,自动会记录
 -- 请求发起时，
--- 如果先在t_url_format中找到可以匹配地址栏url的正则表达式，
---- 就会把匹配到的正则表达式，存放在url_format字段中
--- 如果不存在，则把地址栏当作正则，存放在url_format字段中
+-- 如果有需要,可以修改url_regrex_format  http://www.a.com/id/2323   --> http://www.a.com/id/(\d+)
 drop table if exists t_ajax_request;
 create table t_ajax_request (
     id int not null primary key auto_increment,
     host varchar(1000) not null default '' comment 'ajax请求时的地址栏域名',
-    initiator_url varchar(1000) not null default '' comment 'ajax请求时的地址栏',
-    parent_ajax_url varchar(1000) not null default '' comment '对于单页面应用，url一直不变,父级ajax请求url',
-	url_format varchar(1000) not null default '' comment '匹配地址栏url正则表达式',
-	url_format_id int not null default 0 comment 't_url_format主键ID',
+    --initiator_url varchar(1000) not null default '' comment 'ajax请求时的地址栏',
+    url_format varchar(1000) not null default '' comment 'ajax请求时的地址栏的正则表达式',
     ajax_url varchar(1000) not null default '' comment 'ajax请求url',
     create_time int not null default 0 comment '创建时间',
     status tinyint not null default 1 comment '1 有效，2无效'
 )engine = innodb charset = 'utf8' comment 'ajax 请求表';
 
-
--- 手动配置，每次新增或修改都会更新t_ajax_request表中的记录。
---- 扫描它的initiator_url，如果正则能匹配，就会更新t_ajax_request的url_format和url_format_id
-drop table if exists t_url_format;
-create table t_url_fomat (
-	id int not null primary key auto_increment,
-	url_format varchar(1000) not null default '' comment 'url正则表达式',
-    create_time int not null default 0 comment '创建时间',
-    status tinyint not null default 1 comment '1 有效，2无效'
-)engine = innodb charset = 'utf8' comment 'url正则表达式表';
 
 
 drop table if exists t_log;
@@ -72,7 +58,6 @@ drop table if exists t_ajax_stage_relation;
 create table t_ajax_stage_relation (
     id int not null primary key auto_increment,
     ajax_id int not null default 0 comment 'ajax请求id',
-    url_format varchar(1000) not null default '' comment '浏览器地址正则格式',
     user_id int not null default 0 comment '用户id 0 就是公用的',
     stage_id int not null default 0 comment '步骤id',
     cmd_format varchar(2000) not null default '' comment '待执行的命令格式, 可能会有宏替换如 ___host___',
