@@ -13,11 +13,11 @@ create table t_user (
 -- ajax请求记录,自动会记录
 -- 请求发起时，
 -- 如果有需要,可以修改url_regrex_format  http://www.a.com/id/2323   --> http://www.a.com/id/(\d+)
+-- initiator_url varchar(1000) not null default '' comment 'ajax请求时的地址栏',
 drop table if exists t_ajax_request;
 create table t_ajax_request (
     id int not null primary key auto_increment,
     host varchar(1000) not null default '' comment 'ajax请求时的地址栏域名',
-    --initiator_url varchar(1000) not null default '' comment 'ajax请求时的地址栏',
     url_format varchar(1000) not null default '' comment 'ajax请求时的地址栏的正则表达式',
     ajax_url varchar(1000) not null default '' comment 'ajax请求url',
     create_time int not null default 0 comment '创建时间',

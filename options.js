@@ -102,7 +102,7 @@ $(".js-save-relation").on('click',function(){
 		url:host+'/add-stage-ajax-relation',
 		dataType:"json",
 		type:"post",
-		data:{"url_format":urlFormat,"stage_id":stageId,"cmd_format":cmdFormat},
+		data:{"ajax_id":urlFormat,"stage_id":stageId,"cmd_format":cmdFormat},
 		success:function(res) {
 			console.log(res);
 		    //window.location.reload();
