@@ -73,8 +73,7 @@ $(document).ready(function(){
         success:function(res) {
 			var str = ""
             for(var i= 0; i< res.length; i++) {
-                var line = '<tr> <td>'+res[i].id+'</td> <td>'+res[i].host+'</td> <td>'+res[i].initiator_url+'</td><td>'+res[i].ajax_url+'</td> <td>'+timetrans(res[i].create_time)+'</td> </tr>';
-                str = str + '<option value="'+res[i].initiator+'">'+res[i].initiator+'</option>';
+                str = str + '<option value="'+res[i].id+'">'+res[i].initiator+'</option>';
             }
             $('.js-ajax-url').html(str);
         },
