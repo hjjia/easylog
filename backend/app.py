@@ -35,7 +35,7 @@ def hello():
     # ParseResult(scheme='http', netloc='www.aa.com.cn:8908', path='/asdfasf/teste', params='', query='id=12&name=asfsdfd', fragment='')
     ajax_url = res.scheme+"://"+res.netloc+res.path
     initiator = data['easylog_initiator'] # 地址栏
-    # todo 根据ajax请求的ajax_url,和地址栏，找到关联的stage，并且，执行相应的命令，获取指定步骤下的日志信息。并保存到表中
+    #  根据ajax请求的ajax_url,和地址栏，找到关联的stage，并且，执行相应的命令，获取指定步骤下的日志信息。并保存到表中
     ajaxRequest.saveAjax({"host":data['host'],"initiator_url":initiator,"ajax_url":ajax_url})
     stageList = ajaxRequest.getStageList(initiator,ajax_url)
     try:
@@ -56,7 +56,6 @@ def hello():
 @app.route("/get-log")
 def vlog():
     url = urlparse(request.args.get("url"))
-    print(url)
     initiator = url.scheme + "://" +url.netloc + url.path #地址栏
     ret = log.getLog(initiator)
     return jsonify(ret)
@@ -77,9 +76,9 @@ def stage_list():
 
 @app.route("/add-stage-ajax-relation",methods=['post'])
 def relation():
-    data = request.form
-    ajaxStageRelation.saveRelation(data)
-    return jsonify(data)
+    relation = request.json
+    ajaxStageRelation.saveRelation(relation)
+    return jsonify(relation)
 
 @app.route("/ajax-request-list")
 def ajax_request_list():

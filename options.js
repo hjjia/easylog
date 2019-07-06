@@ -1,9 +1,4 @@
-var name = "options.js";
-console.log(name);
-
 // todo jk 控制页面滚动， gg 回到顶部， G 去页面底部
-
-
 // 时间戳 转化为字符串格式
 function timetrans(date){
 		if(String(date).length < 13) {
@@ -20,12 +15,6 @@ function timetrans(date){
 	    return Y+M+D+h+m+s;
 }
 
-/*
-$(".js-stage-form" ).submit(function( event ) {
-  console.log( $( this ).serializeArray() );
-  event.preventDefault();
-});
-*/
 var host = "http://www.a.com:5000";
 var typeArr = ['unknow','mysql','ssh_server','redis','zookeeper','paas_config','http_request'];
 //$(".js-stage-form" ).submit(function( event ) {
@@ -71,17 +60,40 @@ $(document).ready(function(){
         dataType:"json",
         type:"get",
         success:function(res) {
-			var str = ""
+			var str = "";
+			var ajaxList = " <tr> <th>ID </th> <th>url_format</th> <th>ajax_url</th> <th>host</th> <th>Createtime </th>  <th>Operation</th></tr> ";
             for(var i= 0; i< res.length; i++) {
-                str = str + '<option value="'+res[i].id+'">'+res[i].initiator+'</option>';
+                str = str + '<option value="'+res[i].id+'">'+res[i].url_format+'</option>';
+                ajaxList = ajaxList + ' <tr> <td>'+res[i].id+'</td>';
+                ajaxList = ajaxList + '<td>'+res[i].url_format+'</td>';
+                ajaxList = ajaxList + '<td>'+res[i].ajax_url+'</td>';
+                ajaxList = ajaxList + '<td>'+res[i].host+'</td>';
+                ajaxList = ajaxList + '<td>'+timetrans(res[i].create_time)+'</td>';
+                ajaxList = ajaxList + '<td class="js-edit-ajax" data-id="'+res[i].id+'">edit</td> </tr>';
             }
             $('.js-ajax-url').html(str);
+            $('.js-ajax-list').html(ajaxList);
         },
         error:function(err) {
             alert("server is busy");
         }
     });
-	//do something
+
+    // 步骤列表
+	$.ajax({
+	    url:host+"/stage-list",
+	    dataType:"json",
+	    type:"get",
+	    success: function(res) {
+	    	var str = ""
+            for(var i= 0; i< res.length; i++) {
+                str = str + '<option value="'+res[i].id+'">'+res[i].stage_name+'</option>';
+            }
+            $('.js-stage-id').html(str);
+	    },
+	    error: function(err) {
+	    }
+	});
 
 	$(".js-ajax-url").on('change',function(){
 	    var url = $(this).val();
@@ -90,18 +102,79 @@ $(document).ready(function(){
 
 });
 
+// textare 双击toggle
+$(document).on('dblclick','.js-cmd-format',function(){
+    var hei = $(this).height();
+    if(hei < 100) {
+        $(this).height(400);
+    }else {
+        $(this).height(30);
+    }
+}
+);
+
+
+// 添加一个步骤
+$(document).on('click','.js-add',function(){
+    var stageDiv = $(this).parent()[0].outerHTML;
+    $(this).parent().after(stageDiv);
+    $("form").submit(false);
+});
+
+// 删除一个步骤
+$(document).on('click','.js-mins',function(){
+    if($('.js-all-stage').children().length<=2) {
+        alert('至少要有一个步骤');
+    } else {
+        $(this).parent().remove();
+    }
+});
+
+// 往上移动
+$(document).on('click','.js-up',function(){
+    var stageDiv = $(this).parent()[0].outerHTML;
+    $(this).parent().prev().before(stageDiv);
+    $(this).parent().remove();
+})
+
+//往下移动
+$(document).on('click','.js-down',function(){
+    var stageDiv = $(this).parent()[0].outerHTML;
+    $(this).parent().next().after(stageDiv);
+    $(this).parent().remove();
+});
+
+
 
 $(".js-save-relation").on('click',function(){
-	var	stageId = $('.js-stage-id').val(),
-		urlFormat = $('.js-url-format').val(),
-		cmdFormat = JSON.stringify([$('.js-cmd-format').val()]);
 
-// @app.route("/add-stage-ajax-relation",methods=['post'])
+    var arr = $('.js-all-stage').serializeArray();
+    /*
+    0: {name: "ajax_id", value: "1"}
+    1: {name: "stage_id", value: "1"}
+    2: {name: "stage_cmd_format", value: " 12312321"}
+    3: {name: "ajax_id", value: "1"}
+    4: {name: "stage_id", value: "1"}
+    5: {name: "stage_cmd_format", value: " 333333"}
+    */
+    console.log(arr);
+    var data = [];
+    for(var i=0;i<arr.length; i++) {
+        var j = parseInt(i/3);
+        if(data[j] == undefined) {
+            data[j] = {};
+        }
+        if(! (arr[i].name in data[j])) {
+            data[j][arr[i].name] = arr[i].value;
+        }
+    }
+    data = JSON.stringify(data),
 	$.ajax({
 		url:host+'/add-stage-ajax-relation',
 		dataType:"json",
+		contentType: 'application/json',
 		type:"post",
-		data:{"ajax_id":urlFormat,"stage_id":stageId,"cmd_format":cmdFormat},
+		data:data,
 		success:function(res) {
 			console.log(res);
 		    //window.location.reload();
@@ -112,4 +185,8 @@ $(".js-save-relation").on('click',function(){
 		}
 	});
 
+});
+
+$(document).on('click','.js-edit-ajax',function(){
+    layer();
 });

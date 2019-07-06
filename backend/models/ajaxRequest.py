@@ -2,7 +2,7 @@ from models import Db
 import time,re
 
 def getList(keyword=""):
-    sql = "select url_format as initiator ,min(id) as id  from t_ajax_request group by url_format"
+    sql = "select * from t_ajax_request group by url_format"
     res = Db.fetch_all(sql)
     return res
 

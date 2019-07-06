@@ -2,58 +2,40 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-    <style>
-        button {
-          height: 30px;
-          width: 30px;
-          outline: none;
-          margin: 10px;
-        }
-		.connect_str {
-          height: 200px;
-          width: 300px;
-		}
-		.js-cmd-format {
-          height: 400px;
-          width: 600px;
-		}
-		.js-url-format {
-			width: 900px;
-			height: 30px;
-			margin:2px;
-		}
-		.js-ajax-url {
-			width:900px;
-			height: 30px;
-			margin:2px;
-		}
-      </style>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="js/layer.css">
+<style> </style>
 </head>
 <body>
+
 <div id="options">
     <h1>hello options</h1>
 </div>
 
 <h2>添加步骤</h2>
-<form class="js-stage-form" method="post">
-<div>
-	<span>步骤名称:</span><input name="stage_name" value="" />
-	<br/>
-	<span>步骤类型:</span>
-	<select name="stage_type">
-		<option value="1">mysql</option>
-		<option value="2">ssh_server</option>
-		<option value="3">redis</option>
-		<option value="4">zookeeper</option>
-		<option value="5">paas_config</option>
-		<option value="6">http_request</option>
-	</select>
-	<br/>
-	<textarea name="connect_str" class="connect_str"></textarea>
+<div class="js-add-stage-div">
+    <form class="js-stage-form" method="post">
+        <div>
+            <span class="label">步骤名称:</span><input name="stage_name" value="" />
+            <br/>
+            <span class="label">步骤类型:</span>
+            <select name="stage_type">
+                <option value="1">mysql</option>
+                <option value="2">ssh_server</option>
+                <option value="3">redis</option>
+                <option value="4">zookeeper</option>
+                <option value="5">paas_config</option>
+                <option value="6">http_request</option>
+            </select>
+            <br/>
+            <textarea  placeholder="" name="connect_str" class="js-cmd-format"></textarea>
+        </div>
+        <input type="button" value="添加步骤" class="js-add-stage"/>
+    </form>
 </div>
-<input type="button" value="添加步骤" class="js-add-stage"/>
-</form>
+
 <h2>步骤列表</h2>
+
 <table class="js-stage-list">
 	<tr> <th>ID </th> <th>Stage_name </th> <th>Connect_str</th> <th>Stage_type </th> <th>Createtime </th> </tr>
 	<tr>
@@ -64,24 +46,44 @@
 	</tr>
 </table>
 
+<h2>ajax请求列表</h2>
+<table class="js-ajax-list">
+    <tr> <th>ID </th> <th>url_format</th> <th>ajax_url</th> <th>host</th> <th>Createtime </th>  <th>Operation</th></tr>
+    <tr>
+        <td>1</td>
+        <td>http://www.b.com/user/\w+</td>
+        <td>http://api.b.com/api/userinfo</td>
+        <td>http://www.b.com</td>
+        <td>2019-07-05 20:33:35</td>
+        <td>edit</td>
+    </tr>
+</table>
+
+
 <hr/>
 
-<div>
-	<span>ajaxurl:</span> 
-	<select name="ajax_id" class="js-ajax-url"> </select>
-    <br/>
-	<span>stageID1:</span>
-	<select name="stage_id" class="js-stage-id"> </select>
-	<br/>
-	<span>cmdFormat1:</span><br/><textarea name="stage_cmd_foramt" class="js-cmd-format"> </textarea>
-	<span class="js-add">+</span>
-	<span class="js-mins">-</span>
-	<br/>
-	<input type="button" class="js-save-relation" value="保存关联"/>
-</div>
+<h2>关联步骤和ajax请求</h2>
+<form class="js-all-stage" method="post" action="/">
+	<div class="js-one-stage">
+        <span class="label">ajaxurl:</span>
+        <select name="ajax_id" class="js-ajax-url"> </select>
+        <br/>
+        <span class="label">stage:</span>
+        <select name="stage_id" class="js-stage-id"> </select>
+        <br/>
+        <span class="label">cmdFormat:</span>双击改变输入区域大小<br/><textarea name="cmd_format" placeholder="双击改变输入区域大小"  class="js-cmd-format"> </textarea>
+        <button class="js-mins">-</button>
+        <button class="js-add">+</button>
+		<button class="js-up">↑</button>
+		<button class="js-down">↓</button>
+        <br/>
+	</div>
+	<input type="button"  class="js-save-relation" value="保存关联"/>
+</form>
 
 
 </body>
 <script src="js/jquery.js"></script>
+<script src="js/layer.js"></script>
 <script src="options.js"></script>
 </html>
