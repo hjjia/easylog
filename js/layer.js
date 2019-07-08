@@ -6,6 +6,7 @@ var warnHtml = ' <div class="warn hide"> <div class="title">提示</div> <div cl
 
 function addDom(str) {
     $(document.body).append(str);
+
 }
 
 function warn() {
