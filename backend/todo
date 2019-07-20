@@ -15,5 +15,11 @@ SELECT * FROM `t_ajax_request` where initiator_url like 'http://marketing-admin.
 
 
 7. 可扩展，步骤支持python脚本。
+8. 和翻译插件有点类似，选中某个字符串，可以当作主键去数据库中查询对应的信息。
+
+
 备注：
 上述排名不分先后, 不太成熟的想法
+
+
+
