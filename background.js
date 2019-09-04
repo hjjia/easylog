@@ -1,10 +1,53 @@
- chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.sync.set({color: '#3aa757'}, function() {
-      // open a new tab,direact to the README
-      console.log('welcome! star or issue on my github: https://github.com/helloworldcoding/easylog');
-    });
 
-  });
+// ID, email, timestamp, date, address, 随机数(0~1)
+// editable = false  可以考虑 用confirm弹框来确认
+
+/*
+editable: true
+frameId: 0
+menuItemId: "menuID"
+pageUrl: "https://id.vivo.com.cn/?_201909041631#!/first/aptitude/create"
+selectionText: "oi..t"
+*/
+var menus = [
+    {title: '身份证号码', id: 'menuID'},  // 18位
+    {title: '手机号码', id: 'menuMobile'},  // 11位
+    {title: '银行卡号', id: 'menuBankCardNo'},  // 
+    {title: 'email', id: 'menuEmail'},  // 
+    {title: '5个随机汉字', id: 'menuChinese'},  //
+    {title: '5个随机特殊字符', id: 'menuSpecialChars'},  //
+    //{title: '1~100之间的随机数', id: 'menuRandomInteger'},  // 
+    {title: '当前时间戳', id: 'menuTimestamp'},  // 
+    {title: '当前日期时间', id: 'menuDate'},  // 
+    //{title: '一小时后', id: 'menuAnhourLater'},  // 
+];
+
+// 创建菜单 
+for(var i=0;i < menus.length; i++) {
+    menu = menus[i];
+    menu['type']  = 'normal';
+    menu['contexts'] = ['all'];
+    menu['onclick'] = genericOnClick;
+    chrome.contextMenus.create(menu);
+}
+
+// 右键菜单 邮箱地址 
+/*
+chrome.contextMenus.create({ type: 'normal', title: 'email', id: 'menuEmail', contexts: ['all'], onclick: genericOnClick }, function () {
+    console.log('contextMenus are create.');
+});
+*/
+
+
+function genericOnClick(info, tab) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        // 把信息发送到 content_script中
+        chrome.tabs.sendMessage(tabs[0].id, info, function(response) {
+          console.log('sending',info);
+        });
+      });
+}
+
 
 
 // https://blog.csdn.net/hhmouse111/article/details/36901527

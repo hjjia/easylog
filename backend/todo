@@ -16,7 +16,8 @@ SELECT * FROM `t_ajax_request` where initiator_url like 'http://marketing-admin.
 
 7. 可扩展，步骤支持python脚本。
 8. 和翻译插件有点类似，选中某个字符串，可以当作主键去数据库中查询对应的信息。
-
+9. 直接在页面上唤起sql查询。选择连接串。
+10. 日志动态在半透明div中滚动展示，或者来个弹幕模式。。。
 
 备注：
 上述排名不分先后, 不太成熟的想法
