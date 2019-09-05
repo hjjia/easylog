@@ -29,12 +29,14 @@ chrome.runtime.onMessage.addListener(
 				var res = getResultByText(selectionText);
 				if(!res) {		// res 为空，则提示暂无该关键词
 					alert("尚未配置该关键词，如果需要，请联系管理员");
+					return null;
 				}
 				res = inputObj.val().replace(selectionText,res);	 // 替换一个,应该可以满足需求
 			} else {
 				var  res = getResultByMenuId(request.menuItemId);
 			}
 			inputObj.val(res);
+			inputByJs(inputObj);
 		} else {
 			confirm(selectionText);
 		}
