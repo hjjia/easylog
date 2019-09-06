@@ -145,7 +145,7 @@ function getChinese() {
 
 function getEmail() {
     // 获取随机免费邮箱地址
-    var emailUrl = "http://24mail.chacuo.net/enus";
+	var emailUrl = 'http://24mail.chacuo.net/enus';
     var time = getTimestamp();
     var data = {
         'data': time,
@@ -161,34 +161,41 @@ function getEmail() {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36',
         //'X-Requested-With': 'XMLHttpRequest',
     };
+	var email = '';
     $.ajax({
         url: emailUrl,
         headers: headers,
         method: 'POST',
         dataType: 'json',
         data: data,
+		async:false,
         success: function(data){
-          console.log('succes: '+data);
-        }
+			//{"status":1,"info":"ok","data":["eaxfsc27486"]}
+			email = data.data[0] + 'chacuo.net';
+			  console.log('succes: '+data);
+        },
+		error:function() {
+			var arr ="0123456789abcdefghiklmnopqrstuvwxyz".split("");
+			email = randomItems(arr,8).join("") + "@" + randomItems(arr,5).join("") + "." + randomItems(arr,3).join("");
+		}
       });
-    return "asdfasdfas@12341423.com";
+	return email;
 }
 
 function getDate() {
     // "2019-09-04 12:12:50"
-    /*
-    var myDate = new Date();
-    myDate.getYear();        //获取当前年份(2位)
-    myDate.getFullYear();    //获取完整的年份(4位,1970-????)
-    myDate.getMonth();       //获取当前月份(0-11,0代表1月)
-    myDate.getDate();        //获取当前日(1-31)
-    myDate.getDay();         //获取当前星期X(0-6,0代表星期天)
-    myDate.getTime();        //获取当前时间(从1970.1.1开始的毫秒数)
-    myDate.getHours();       //获取当前小时数(0-23)
-    myDate.getMinutes();     //获取当前分钟数(0-59)
-    myDate.getSeconds();     //获取当前秒数(0-59)
-    */
-    var now = New Date();
+    //```var myDate = new Date();
+    //```myDate.getYear();        //获取当前年份(2位)
+    //```myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+    //```myDate.getMonth();       //获取当前月份(0-11,0代表1月)
+    //```myDate.getDate();        //获取当前日(1-31)
+    //```myDate.getDay();         //获取当前星期X(0-6,0代表星期天)
+    //```myDate.getTime();        //获取当前时间(从1970.1.1开始的毫秒数)
+    //```myDate.getHours();       //获取当前小时数(0-23)
+    //```myDate.getMinutes();     //获取当前分钟数(0-59)
+    //```myDate.getSeconds();     //获取当前秒数(0-59)
+
+    var now = new Date();
     var year = now.getFullYear() + "";
     var month = now.getMonth() + 1;
     var day = now.getDate();
