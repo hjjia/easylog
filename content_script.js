@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener(
 				var  res = getResultByMenuId(request.menuItemId);
 			}
 			inputObj.val(res);
-			inputByJs(inputObj);
+			inputObj[0].dispatchEvent(new Event('input')) // 修改vue 生成的页面，需要触发一下input事件，不然 这些虚拟的dom不能用。。。
 		} else {
 			confirm(selectionText);
 		}
