@@ -25,15 +25,14 @@ chrome.runtime.onMessage.addListener(
 		var selectionText = request.selectionText;
 		if(request.editable) {
 			var  inputObj = $("input:focus,textarea:focus"); //光标所在元素
+			var  res = getResultByMenuId(request.menuItemId, selectionText);
 			if(selectionText) {
-				var res = getResultByText(selectionText);
+				//var res = getResultByText(selectionText);
 				if(!res) {		// res 为空，则提示暂无该关键词
 					alert("尚未配置该关键词，如果需要，请联系管理员");
 					return null;
 				}
 				res = inputObj.val().replace(selectionText,res);	 // 替换一个,应该可以满足需求
-			} else {
-				var  res = getResultByMenuId(request.menuItemId);
 			}
 			inputObj.val(res);
 			inputObj[0].dispatchEvent(new Event('input')) // 修改vue 生成的页面，需要触发一下input事件，不然 这些虚拟的dom不能用。。。

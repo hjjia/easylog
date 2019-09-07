@@ -10,13 +10,14 @@ pageUrl: "https://id.vivo.com.cn/?_201909041631#!/first/aptitude/create"
 selectionText: "oi..t"
 */
 var menus = [
+    //{title: '1~100之间的随机数', id: 'menuRandomInteger'},  // 
+    {title: '解析选中内容', id: 'menuSelectText'},  // 
     {title: '身份证号码', id: 'menuID'},  // 18位
     {title: '手机号码', id: 'menuMobile'},  // 11位
     {title: '银行卡号', id: 'menuBankCardNo'},  // 
     {title: 'email', id: 'menuEmail'},  // 
     {title: '5个随机汉字', id: 'menuChinese'},  //
     {title: '5个随机特殊字符', id: 'menuSpecialChars'},  //
-    //{title: '1~100之间的随机数', id: 'menuRandomInteger'},  // 
     {title: '当前时间戳', id: 'menuTimestamp'},  // 
     {title: '当前日期时间', id: 'menuDate'},  // 
     //{title: '一小时后', id: 'menuAnhourLater'},  // 
