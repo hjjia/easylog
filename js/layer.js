@@ -20,7 +20,6 @@ function display(type,options) {
 	}else{	
 	}
 	html += '</div> ';
-	console.log(html);
     $(document.body).append(maskHtml);
     $(document.body).append(html);
 	$(document).on('click','.i_know',function(){
@@ -55,8 +54,8 @@ function tips(options) {
 }
 
 // 添加一些表单元素  确定 + 取消
-function layer() {
-	var content = '<input name="safsd" value="123213213"/>';
+function layer(html='') {
+	var content = html+'<input name="safsd" value="123213213"/>';
 	display("layer",{
 		content:content,	
 		okCb:function(){

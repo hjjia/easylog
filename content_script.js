@@ -12,7 +12,7 @@ var msg = {
 
 // 监听消息
 /*
-editable: true
+
 frameId: 0
 menuItemId: "menuID"
 pageUrl: "https://id.vivo.com.cn/?_201909041631#!/first/aptitude/create"
@@ -23,6 +23,7 @@ chrome.runtime.onMessage.addListener(
 		console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
 		console.log('嘿嘿',request);
 		var selectionText = request.selectionText;
+		// 如果是输入框,input text area
 		if(request.editable) {
 			var  inputObj = $("input:focus,textarea:focus"); //光标所在元素
 			var  res = getResultByMenuId(request.menuItemId, selectionText);
@@ -36,8 +37,8 @@ chrome.runtime.onMessage.addListener(
 			}
 			inputObj.val(res);
 			inputObj[0].dispatchEvent(new Event('input')) // 修改vue 生成的页面，需要触发一下input事件，不然 这些虚拟的dom不能用。。。
-		} else {
-			confirm(selectionText);
+		} else { // 非输入
+			layer(selectionText);
 		}
 	});
 

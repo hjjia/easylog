@@ -21,7 +21,8 @@
 	"permissions":["<all_urls>","tabs","webRequest","activeTab","declarativeContent","storage","contextMenus"],
 	"content_scripts":[{
 		"matches":["<all_urls>"],
-		"js":["js/jquery.js","js/function.js", "content_script.js"]
+		"js":["js/jquery.js","js/layer.js","js/function.js", "content_script.js"],
+		"css":["js/layer.css"]
 	}],
 	"background": {
 		"matches":["<all_urls>"],
