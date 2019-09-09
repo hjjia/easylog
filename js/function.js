@@ -121,7 +121,7 @@ function getRandomIds(num=5, delimitor=","){
     for(var i = 0; i< num; i++){
         res.push(randomInt(1000000));
     }
-    delimitor =  delimitor == 'n' ? "\n" : delimitorl;
+    delimitor =  delimitor == 'n' ? "\n" : delimitor;
     return res.join(delimitor);
 }
 
