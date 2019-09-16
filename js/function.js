@@ -184,6 +184,8 @@ function getChinese(num=5) {
 
 function getEmail() {
     // 获取随机免费邮箱地址
+    // https://temp-mail.org/
+    //https://api4.temp-mail.org/request/mail/id/83c8c20a21ad0e90109e382c5c78bf3f/format/json
 	var emailUrl = 'http://24mail.chacuo.net/enus';
     var time = getTimestamp();
     var data = {

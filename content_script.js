@@ -25,7 +25,10 @@ chrome.runtime.onMessage.addListener(
 		var selectionText = request.selectionText;
 		// 如果是输入框,input text area
 		if(request.editable) {
-			var  inputObj = $("input:focus,textarea:focus"); //光标所在元素
+			var  inputObj = $("input:focus,textarea:focus,div:focus"); //光标所在元素
+			console.log('inputobj',inputObj);
+			console.log('inputobj',inputObj[0]);
+			//console.log('inputobjval',inputObj[0].val());
 			var  res = getResultByMenuId(request.menuItemId, selectionText);
 			if(selectionText) {
 				//var res = getResultByText(selectionText);
@@ -38,7 +41,7 @@ chrome.runtime.onMessage.addListener(
 			inputObj.val(res);
 			inputObj[0].dispatchEvent(new Event('input')) // 修改vue 生成的页面，需要触发一下input事件，不然 这些虚拟的dom不能用。。。
 		} else { // 非输入
-			layer(selectionText);
+			layer("字符长度："+selectionText.length + " " + selectionText);
 		}
 	});
 
