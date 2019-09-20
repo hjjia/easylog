@@ -19,6 +19,13 @@ failRet = {
     "data":[]
 }
 
+
+@app.route("/backend-info",methods=['post','get'])
+def getInfo():
+    data = dict(request.form)
+    successRet['data'] = data
+    return jsonify(successRet)
+    
 '''
 from routes import *
 可以把各种路由，写在routes.py的文件中，

@@ -12,6 +12,7 @@ selectionText: "oi..t"
 var menus = [
     //{title: '1~100之间的随机数', id: 'menuRandomInteger'},  // 
     {title: '解析选中内容', id: 'menuSelectText'},  // 
+    {title: '获取后端信息', id: 'menuBackendInfo'},  // 
     {title: '身份证号码', id: 'menuID'},  // 18位
     {title: '手机号码', id: 'menuMobile'},  // 11位
     {title: '银行卡号', id: 'menuBankCardNo'},  // 
@@ -114,16 +115,17 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 });
 
 
-//chrome.webRequest.onCompleted.addListener (
-chrome.webRequest.onBeforeRequest.addListener(
 
+// chrome.webRequest.onBeforeRequest.addListener(
+
+    /*
     function(details) {
         chrome.tabs.query({'active': true,'highlighted':true, 'lastFocusedWindow': true}, function (tabs) {
                currentActiveUrl = tabs && tabs[0] && tabs[0].url;
         });
 
 		//if(details.type == "xmlhttprequest" && currentUrl == currentActiveUrl ){
-		if(details.type == "xmlhttprequest" ){
+		if( 1 == 0 && details.type == "xmlhttprequest"  ){
 			if(details.url.indexOf(host) == -1
 				&& details.url.indexOf("http://chrome-extension") == -1
 				&& details.url.indexOf("https://chrome-extension") == -1
@@ -167,9 +169,10 @@ chrome.webRequest.onBeforeRequest.addListener(
 					}
 				});
 			} 
-		}
+        }
     },
 
-    {urls:["*://*/*"]},  //监听页面请求,你也可以通过*来匹配。
-    ["requestBody"]
-);
+    */
+    //{urls:["*://*/*"]},  //监听页面请求,你也可以通过*来匹配。
+    //["requestBody"]
+//);
