@@ -19,6 +19,8 @@ SELECT * FROM `t_ajax_request` where initiator_url like 'http://marketing-admin.
 9. 直接在页面上唤起sql查询。选择连接串。
 10. 日志动态在半透明div中滚动展示，或者来个弹幕模式。。。
 
+11. url_reg ---> db/redis --- cmd_format
+
 备注：
 上述排名不分先后, 不太成熟的想法
 

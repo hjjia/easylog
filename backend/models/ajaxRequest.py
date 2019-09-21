@@ -38,7 +38,6 @@ def getStageList(initiatorUrl,ajaxUrl):
     :return:
     '''
     req = getOne(initiatorUrl,ajaxUrl)
-    print('req',req)
     if req :
         sql = " select ar.host, ar.url_format, ar.ajax_url, asr.cmd_format, asr.ajax_id, asr.stage_id, st.connect_str, st.stage_name, st.stage_type" \
               " from t_ajax_request ar join t_ajax_stage_relation asr on ar.id = asr.ajax_id " \

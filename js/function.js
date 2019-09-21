@@ -113,10 +113,12 @@ function parseText(text) {
         case /^id\d+[n,;]$/.test(text):
             res = text.match(/^id(\d+)([n,;])/);
             str = getRandomIds(res[1],res[2]);
+            break;
         //n12  12个数字
         case /n\d+$/.test(text):
             res = text.match(/n(\d+)/);
             str = randomItems(numbers,res[1]).join("");
+            break;
         default:
             break;
 

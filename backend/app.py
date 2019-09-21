@@ -1,4 +1,5 @@
-from flask import Flask, Response, jsonify, request
+from flask import Flask, Response, jsonify, request,make_response
+from flask_cors import  CORS
 from time import time
 from models import user,stage,ajaxRequest,log,ajaxStageRelation
 from utils import cmd
@@ -23,8 +24,12 @@ failRet = {
 @app.route("/backend-info",methods=['post','get'])
 def getInfo():
     data = dict(request.form)
+    pageUrl = data['pageUrl']
+    text = data['selectionText']
     successRet['data'] = data
-    return jsonify(successRet)
+    response = make_response(jsonify(successRet))
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
     
 '''
 from routes import *
