@@ -13,9 +13,9 @@ function randomItem(arr) {
     return  arr[ Math.floor( Math.random() * arr.length ) ];
 }
 
-// 返回 0 到i的 随机整数
-function randomInt(i=10) {
-    return Math.floor(Math.random() * i);
+// 返回 j 到i的 随机整数
+function randomInt(i=10,j=0) {
+    return Math.floor(Math.random() * i + j);
 }
 
 
@@ -110,6 +110,7 @@ function parseText(text) {
             str = getChinese(res[1]); 
             break;
         //id10;  十个id用分号分隔， id10n 十个id用换行分隔，  id10, 十个id用逗号分隔
+		// 这些id都是0～10000000 一千万
         case /^id\d+[n,;]$/.test(text):
             res = text.match(/^id(\d+)([n,;])/);
             str = getRandomIds(res[1],res[2]);
@@ -119,6 +120,12 @@ function parseText(text) {
             res = text.match(/n(\d+)/);
             str = randomItems(numbers,res[1]).join("");
             break;
+		//1-12,10,  返回10个1~12的随机整数,用逗号分割
+		case /(\d+)-(\d+),(\d+)(.*)/.test(text):
+			res = text.match(/(\d+)-(\d+),(\d+)(.*)/);
+			//function getRandomIds(num=5, delimitor=",", end=1000000,start=0){
+            str = getRandomIds(res[3],res[4],res[2],res[1]);
+			break;
         default:
             break;
 
@@ -149,12 +156,13 @@ function getBackendInfo(request) {
 }
 
 // 随机获取一些id
-function getRandomIds(num=5, delimitor=","){
+function getRandomIds(num=5, delimitor=",", end=1000000,start=0){
     var res = [];
     for(var i = 0; i< num; i++){
-        res.push(randomInt(1000000));
+        res.push(randomInt(end,start));
     }
     delimitor =  delimitor == 'n' ? "\n" : delimitor;
+    delimitor =  delimitor == 't' ? "\t" : delimitor;
     return res.join(delimitor);
 }
 

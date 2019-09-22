@@ -1,5 +1,4 @@
 from flask import Flask, Response, jsonify, request,make_response
-from flask_cors import  CORS
 from time import time
 from models import user,stage,ajaxRequest,log,ajaxStageRelation
 from utils import cmd
