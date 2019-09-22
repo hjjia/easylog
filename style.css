@@ -13,8 +13,8 @@ button {
           max-height: 600px;
           width: 600px;
 		}
-		.js-stage-id, .js-ajax-url {
-			max-width: 800px;
+		.js-stage-id, .js-page-url {
+			width:600px;
 			height: 30px;
 			margin:2px;
 		}

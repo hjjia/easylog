@@ -46,7 +46,7 @@
 	</tr>
 </table>
 
-<h2>ajax请求列表</h2>
+<h2>pageUrl列表</h2>
 <table class="js-ajax-list">
     <tr> <th>ID </th> <th>url_format</th> <th>ajax_url</th> <th>host</th> <th>Createtime </th>  <th>Operation</th></tr>
     <tr>
@@ -62,11 +62,12 @@
 
 <hr/>
 
-<h2>关联步骤和ajax请求</h2>
+<h2> pageUrl & stage  & cmd_form</h2>
 <form class="js-all-stage" method="post" action="/">
 	<div class="js-one-stage">
-        <span class="label">ajaxurl:</span>
-        <select name="ajax_id" class="js-ajax-url"> </select>
+        <span class="label">pageUrl:</span>
+		<!--<select name="ajax_id" class="js-ajax-url"> </select> -->
+		<input name="page_url" class="js-page-url"  placeholder="http://www.test.com/\d+" /> 
         <br/>
         <span class="label">stage:</span>
         <select name="stage_id" class="js-stage-id"> </select>

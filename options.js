@@ -150,10 +150,10 @@ $(".js-save-relation").on('click',function(){
 
     var arr = $('.js-all-stage').serializeArray();
     /*
-    0: {name: "ajax_id", value: "1"}
+    0: {name: "page_url", value: "1"}
     1: {name: "stage_id", value: "1"}
     2: {name: "stage_cmd_format", value: " 12312321"}
-    3: {name: "ajax_id", value: "1"}
+    3: {name: "page_url", value: "1"}
     4: {name: "stage_id", value: "1"}
     5: {name: "stage_cmd_format", value: " 333333"}
     */

@@ -57,7 +57,7 @@ create table t_stage (
 drop table if exists t_ajax_stage_relation;
 create table t_ajax_stage_relation (
     id int not null primary key auto_increment,
-    ajax_id int not null default 0 comment 'ajax请求id',
+    page_url varchar(250) not null default '' comment 'page url 的正则',
     user_id int not null default 0 comment '用户id 0 就是公用的',
     stage_id int not null default 0 comment '步骤id',
     cmd_format varchar(2000) not null default '' comment '待执行的命令格式, 可能会有宏替换如 ___host___',
