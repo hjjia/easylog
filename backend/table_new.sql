@@ -55,7 +55,8 @@ create table t_stage (
 --  这样的请求，会需要哪些地方的日志/数据信息
 -- 个性化的步骤列表，后期再做吧
 drop table if exists t_ajax_stage_relation;
-create table t_ajax_stage_relation (
+drop table if exists t_page_stage_relation;
+create table t_page_stage_relation (
     id int not null primary key auto_increment,
     page_url varchar(250) not null default '' comment 'page url 的正则',
     user_id int not null default 0 comment '用户id 0 就是公用的',

@@ -1,6 +1,6 @@
 from flask import Flask, Response, jsonify, request,make_response
 from time import time
-from models import user,stage,ajaxRequest,log,ajaxStageRelation
+from models import user,stage,ajaxRequest,log,pageStageRelation
 from utils import cmd
 from utils.cache import Cache
 from urllib.parse import urlparse
@@ -85,10 +85,10 @@ def stage_list():
     return jsonify(res)
 
 
-@app.route("/add-stage-ajax-relation",methods=['post'])
+@app.route("/add-page-stage-relation",methods=['post'])
 def relation():
     relation = request.json
-    ajaxStageRelation.saveRelation(relation)
+    pageStageRelation.saveRelation(relation)
     return jsonify(relation)
 
 @app.route("/ajax-request-list")

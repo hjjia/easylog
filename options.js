@@ -170,7 +170,7 @@ $(".js-save-relation").on('click',function(){
     }
     data = JSON.stringify(data),
 	$.ajax({
-		url:host+'/add-stage-ajax-relation',
+		url:host+'/add-page-stage-relation',
 		dataType:"json",
 		contentType: 'application/json',
 		type:"post",
