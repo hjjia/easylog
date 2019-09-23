@@ -14,6 +14,8 @@ var EasyLog = function (options) {
     var panelHeight = 100;
     var panelHeaderHeight = 30;
     var easylogDrag;
+    var isMinimized = false;
+    var panelCurrentPosition;
 
     /**
      * 创建logo
@@ -82,7 +84,7 @@ var EasyLog = function (options) {
         } else {
             panelDom = document.createElement('div');
             panelDom.id = panelId;
-            panelDom.style.cssText = 'position: fixed; top: '+ panelTop +'px; left: '+ panelLeft +'px;width: '+ panelWidth +'px; height: '+ panelHeight +'px; border: 1px solid #000;background-color: white;';
+            panelDom.style.cssText = 'position: fixed; top: '+ panelTop +'px; left: '+ panelLeft +'px;width: '+ panelWidth +'px; height: '+ panelHeight +'px; border: 1px solid #000;background-color: white;padding-top: '+ panelHeaderHeight +'px;';
             panelDom.innerHTML = `<div class="easy-log-header" id="${headerId}" style="position: absolute; top: 0; left: 0; right: 0; height: ${panelHeaderHeight}px; background-color: #eee;display: flex; justify-content: space-between;align-items: center;">
                     <div class="easy-log-header">EsayLog</div>
                     <div>
@@ -98,7 +100,17 @@ var EasyLog = function (options) {
             // 为图标添加事件
             document.getElementById(minimizeId).addEventListener('click', function () {
                 console.log('最小化');
-                minimizeDom(panelDom, panelHeaderHeight);
+                if (isMinimized) { // 如果当前是最小化，则恢复之前的位置
+                    recoverPosition(panelDom, panelCurrentPosition);
+                    isMinimized = false;
+                } else { // 如果不是最小化， 记录当前位置用来恢复时使用
+                    panelCurrentPosition = {
+                        left: parseInt(panelDom.style.left),
+                        top: parseInt(panelDom.style.top),
+                    }
+                    minimizeDom(panelDom, panelHeaderHeight);
+                    isMinimized = true;
+                }
             }, true);
             document.getElementById(fixedId).addEventListener('click', function () {
                 console.log('固定');
@@ -144,6 +156,16 @@ var EasyLog = function (options) {
         }
         target.style.left = left + 'px';
         target.style.top = top + 'px';
+    }
+
+    /**
+     * 从最小化恢复到原来的位置
+     * @param {DOM} target 
+     * @param {x, y} position 
+     */
+    function recoverPosition(target, position) {
+        target.style.top = position.top + 'px';
+        target.style.left = position.left + 'px';
     }
 
     return {
