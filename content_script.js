@@ -9,6 +9,8 @@ var msg = {
     "url": window.location.href
 };
 
+// 创建EasyLogo
+var EasyLog = EasyLog();
 
 // 监听双击事件
 //document.addEventListener("dblclick", doubleClick, true);
@@ -40,8 +42,11 @@ function mouseUp() {
     }
     if ("" != text) {
 		//layer(text);
-        console.log(text);
-    }
+		console.log(text);
+		EasyLog.createLogo();
+    } else {
+		EasyLog.hideLogo();
+	}
 }
 
 
