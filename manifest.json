@@ -7,22 +7,22 @@
 		"default_popup":"popup.html",
 		"default_title": "EasyLog ^_^",
 		"dafault_icon":{
-			"16":"images/get_started16.png",
-			"32":"images/get_started32.png",
-			"48":"images/get_started48.png"
+			"16":"images/shanzhu_start16.png",
+			"32":"images/shanzhu_start32.png",
+			"48":"images/shanzhu_start48.png"
 		}
 	},
 	"icons": {
-		"16":"images/get_started16.png",
-		"32":"images/get_started32.png",
-		"48":"images/get_started48.png"
+		"16":"images/shanzhu_start16.png",
+		"32":"images/shanzhu_start32.png",
+		"48":"images/shanzhu_start48.png"
 	},
 	"options_page": "options.html",
 	"permissions":["<all_urls>","tabs","webRequest","activeTab","declarativeContent","storage","contextMenus"],
 	"content_scripts":[{
 		"matches":["<all_urls>"],
 		"js":["js/jquery.js","js/layer.js","js/function.js","js/show.js", "content_script.js"],
-		"css":["js/layer.css"]
+		"css":["js/layer.css", "js/show.css"]
 	}],
 	"background": {
 		"matches":["<all_urls>"],

@@ -1,8 +1,10 @@
 var EasyLog = function (options) {
     var logoId = 'easy-log-id';
     var panelId = 'easy-log-panel-id';
+    var isPanelFixed = false;
     var headerId = 'easy-log-panel-header-id';
     var minimizeId = 'easy-log-minimized-id';
+    var maxId = 'easy-log-max-id';
     var fixedId = 'easy-log-fixed-id';
     var closedId = 'easy-log-closed-id';
     var panelContentId = 'easy-log-panel-content-id';
@@ -10,18 +12,22 @@ var EasyLog = function (options) {
     var panelDom;
     var logoWidth = 50;
     var logoHeight = 50;
-    var panelWidth = 200;
-    var panelHeight = 100;
+    var panelWidth = 500;
+    var panelHeight = 250;
     var panelHeaderHeight = 30;
     var easylogDrag;
     var isMinimized = false;
+    var isMaxed = false;
     var panelCurrentPosition;
+    var ETOptions = options;
 
     /**
      * 创建logo
      */
     function createLogo() {
         var e = window.event;
+        e.preventDefault();
+        e.stopPropagation();
         var x = e.clientX;
         var y = e.clientY;
         if (logoDom) {
@@ -31,7 +37,8 @@ var EasyLog = function (options) {
         } else {
             var logo = document.createElement('div');
             logo.id = logoId;
-            logo.style.cssText = 'position: fixed; top: '+ y +'px; left: '+ x +'px;width: '+ logoWidth +'px; height: '+ logoHeight +'px; border: 1px solid #000;';
+            logo.style.cssText = 'position: fixed; top: '+ y +'px; left: '+ x +'px;width: '+ logoWidth +'px; height: '+ logoHeight +'px;';
+            logo.innerHTML = `<span class="iconfont icon-shanzhu-black"> </span>`;
             document.body.appendChild(logo);
             logoDom = document.getElementById(logoId);
             logoDom.addEventListener('click', function () {
@@ -62,10 +69,26 @@ var EasyLog = function (options) {
         setLogoVisible(false);
     }
 
+    /**
+     * 设置固定图标状态
+     * @param {*} status 
+     */
+    function setFixedStatus(status) {
+        isPanelFixed = status;
+        const fixDom = document.getElementById(fixedId);
+        if (isPanelFixed) {
+            fixDom.className = 'iconfont icon-fixed icon-fixed-active';
+        } else {
+            fixDom.className = 'iconfont icon-fixed';
+        }
+    }
+
     function createPanel() {
         var e = window.event;
         var x = e.clientX;
         var y = e.clientY;
+        var bodyWidth = document.body.clientWidth;
+        var bodyHeight = document.body.clientHeight;
         var logoLeftPx = logoDom.style.left;
         var logoLeft = +logoLeftPx.substr(0, logoLeftPx.length - 2);
         var logoTopPx = logoDom.style.top;
@@ -73,9 +96,20 @@ var EasyLog = function (options) {
         var panelLeft = logoLeft + logoWidth + 20;
         var panelTop = logoTop;
 
+        console.log(panelLeft, panelWidth, bodyWidth, panelWidth + panelLeft);
+        if (panelLeft + panelWidth > bodyWidth) {
+            panelLeft = bodyWidth - panelWidth;
+        }
+
+        if (panelTop + panelHeight > bodyHeight) {
+            panelTop = bodyHeight - panelHeight;
+        }
+
         if (panelDom) {
             panelDom.style.top = panelTop + 'px';
             panelDom.style.left = panelLeft + 'px';
+            panelDom.style.width = panelWidth + 'px';
+            panelDom.style.height = panelHeight + 'px';
             panelDom.style.display = 'block';
 
             if (easylogDrag) {
@@ -84,20 +118,22 @@ var EasyLog = function (options) {
         } else {
             panelDom = document.createElement('div');
             panelDom.id = panelId;
-            panelDom.style.cssText = 'position: fixed; top: '+ panelTop +'px; left: '+ panelLeft +'px;width: '+ panelWidth +'px; height: '+ panelHeight +'px; border: 1px solid #000;background-color: white;padding-top: '+ panelHeaderHeight +'px;';
+            panelDom.style.cssText = 'dispaly: block; position: fixed; top: '+ panelTop +'px; left: '+ panelLeft +'px;width: '+ panelWidth +'px; height: '+ panelHeight +'px;background-color: white;padding-top: '+ panelHeaderHeight +'px;';
             panelDom.innerHTML = `<div class="easy-log-header" id="${headerId}" style="position: absolute; top: 0; left: 0; right: 0; height: ${panelHeaderHeight}px; background-color: #eee;display: flex; justify-content: space-between;align-items: center;">
                     <div class="easy-log-header">EsayLog</div>
                     <div>
-                        <span id="${minimizeId}" style="cursor: pointer;"> - </span>
-                        <span id="${fixedId}" style="cursor: pointer;"> 固定 </span>
-                        <span id="${closedId}" style="cursor: pointer;"> 关闭 </span>
+                        <span id="${minimizeId}" class="iconfont icon-mini"></span>
+                        <span id="${maxId}" class="iconfont icon-max"></span>
+                        <span id="${fixedId}" class="iconfont icon-fixed"></span>
+                        <span id="${closedId}" class="iconfont icon-close"></span>
                     </div>
                 </div>
-                <div class="easy-log-content" id="${panelContentId}">hello world!</div>`;
+                <div class="easy-log-content" id="${panelContentId}">${ETOptions.content || 'hello World!'}</div>`;
             document.body.appendChild(panelDom);
             panelDom = document.getElementById(panelId);
             
             // 为图标添加事件
+            // 最小化
             document.getElementById(minimizeId).addEventListener('click', function () {
                 console.log('最小化');
                 if (isMinimized) { // 如果当前是最小化，则恢复之前的位置
@@ -112,18 +148,51 @@ var EasyLog = function (options) {
                     isMinimized = true;
                 }
             }, true);
+
+            // 最大化
+            document.getElementById(maxId).addEventListener('click', function (e) {
+                if (isMaxed) { // 如果是最大化 则恢复之前的位置
+                    recoverPosition(panelDom, panelCurrentPosition);
+                    isMaxed = false;
+                } else {
+                    panelCurrentPosition = {
+                        left: parseInt(panelDom.style.left),
+                        top: parseInt(panelDom.style.top),
+                        height: parseInt(getCss(panelDom, 'height')),
+                        width: parseInt(getCss(panelDom, 'width')),
+                    }
+                    maxPanelDom(panelDom);
+                    isMaxed = true;
+                }
+            });
+            // 固定
             document.getElementById(fixedId).addEventListener('click', function () {
-                console.log('固定');
+                setFixedStatus(!isPanelFixed);
             }, true);
+            // 关闭
             document.getElementById(closedId).addEventListener('click', function () {
-                console.log('关闭');
                 document.getElementById(panelContentId).innerHTML = '';
                 panelDom.style.display = 'none';
+                setFixedStatus(false);
             }, true);
 
             // header添加拖拽事件
             easylogDrag = EasyLogDrag(document.getElementById(headerId), panelDom);
         }
+
+        // 点击页面其他地方时，隐藏面板和小图标
+        document.addEventListener('click', function (e) {
+            e = e || window.event;
+
+            // e.path记录冒泡路径，...>easylog-panelId -> body.rec -> document -> html -> window
+            // 倒数第五个是panel
+            // console.log(e.target, 'e.target', e.path.length, e.path, e.path[e.path.length - 5], getCss(panelDom, 'display'));
+            const pathLen = e.path.length;
+            if ((!e.path[pathLen - 5] || e.path[pathLen - 5].id !== panelId) && getCss(panelDom, 'display') === 'block' && !isPanelFixed ) {
+                panelDom.style.display = 'none';
+            }
+
+        }, true)
     }
 
     /**
@@ -159,6 +228,16 @@ var EasyLog = function (options) {
     }
 
     /**
+     * 最大化，默认靠右宽一半，高100%
+     */
+    function maxPanelDom(panelDom) {
+        panelDom.style.left = '50%';
+        panelDom.style.top = 0;
+        panelDom.style.width = '50%';
+        panelDom.style.height = '100%';
+    }
+
+    /**
      * 从最小化恢复到原来的位置
      * @param {DOM} target 
      * @param {x, y} position 
@@ -166,11 +245,24 @@ var EasyLog = function (options) {
     function recoverPosition(target, position) {
         target.style.top = position.top + 'px';
         target.style.left = position.left + 'px';
+
+        position.width && (target.style.width = position.width + 'px');
+        position.height && (target.style.height = position.height + 'px');
+    }
+
+    /**
+     * 设置panel InnerHtml
+     * @param {*} html 
+     */
+    function setPanelInnerHtml(html) {
+        var panelContentDom = document.getElementById(panelContentId);
+        panelContentDom && (panelContentDom.innerHTML = html);
     }
 
     return {
         createLogo: createLogo,
         hideLogo: hideLogo,
+        setPanelContent: setPanelInnerHtml, // 设置面板内容
     }
 }
 

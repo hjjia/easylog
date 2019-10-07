@@ -10,7 +10,9 @@ var msg = {
 };
 
 // 创建EasyLogo
-var EasyLog = EasyLog();
+var EasyLog = EasyLog({
+	content: '<div>你好 easyTest</div>'
+});
 
 // 监听双击事件
 //document.addEventListener("dblclick", doubleClick, true);
@@ -44,6 +46,7 @@ function mouseUp() {
 		//layer(text);
 		console.log(text);
 		EasyLog.createLogo();
+		EasyLog.setPanelContent('<div>' + text + '</div>')
     } else {
 		EasyLog.hideLogo();
 	}
