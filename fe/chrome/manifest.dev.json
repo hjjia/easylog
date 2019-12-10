@@ -1,0 +1,29 @@
+{
+  "version": "0.0.0",
+  "name": "EasyTest",
+  "manifest_version": 2,
+  "description": "A easy way to Testing",
+  "browser_action": {
+    "default_title": "EasyLog ^_^",
+    "default_popup": "popup.html",
+    "dafault_icon":{
+			"16": "img/shanzhu_start16.png",
+      "32": "img/shanzhu_start32.png",
+      "48": "img/shanzhu_start48.png"
+		}
+  },
+  "icons": {
+    "16": "img/shanzhu_start16.png",
+    "32": "img/shanzhu_start32.png",
+    "48": "img/shanzhu_start48.png"
+  },
+  "options_page": "popup.html",
+  "web_accessible_resources": [
+    "inject.html"
+  ],
+  "background": {
+    "page": "background.html"
+  },
+  "permissions":["<all_urls>","tabs","webRequest","activeTab","declarativeContent","storage","contextMenus", "contextMenus", "management" ],
+  "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
+}
